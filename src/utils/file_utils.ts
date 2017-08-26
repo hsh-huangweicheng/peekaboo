@@ -4,22 +4,13 @@ const walk = require('walk');
 
 export class FileUtils {
 
-    public static readLines(filePath: string): Promise<string[]> {
-
-        return new Promise((resolve) => {
-            const list: string[] = []
-            const lineReader = readline.createInterface({
-                input: fs.createReadStream(filePath)
-            });
-
-            lineReader.on('line', function (line) {
-                list.push(line);
-            });
-
-            lineReader.on('close', () => {
-                resolve(list);
-            });
+    public static readLines(filePath: string, onLine: (line: string) => void, onClose: Function): void {
+        var rl = readline.createInterface({
+            input: fs.createReadStream(filePath)
         });
+
+        rl.on('line', onLine);
+        rl.on('close', onLine);
     }
 
     public static getAllFilePaths(dir: string): Promise<string[]> {
