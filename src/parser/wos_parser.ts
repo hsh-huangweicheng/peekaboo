@@ -8,9 +8,9 @@ export class WosParser implements Parser {
     private field: string;
     private record: WosRecord;
 
-    onRecord: (record: WosRecord) => void;
+    onRecord: (record: WosRecord, filePath: string) => void;
 
-    exact(line: string): void {
+    exact(line: string, filePath: string): void {
 
         const list: WosRecord[] = [];
 
@@ -40,7 +40,7 @@ export class WosParser implements Parser {
                 if (this.record) {
                     this.record.__DB = 'wos';
                     this.record.__ID = this.record.UT;
-                    this.onRecord(this.record);
+                    this.onRecord(this.record, filePath);
                 } else {
                     console.error(`can not find PT`);
                 }

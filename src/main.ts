@@ -1,7 +1,7 @@
-import { CoFoundingAnalyzer } from './analyzer/co_founding';
+import { FoundingAnalyzer } from './analyzer/founding_analyzer';
+import { PerYearCountryByFileAnalyzer } from './analyzer/per_year_country_by_file';
 import { CoInstitutionAnalyzer } from './analyzer/co_institution';
 import { CoCountryAnalyzer } from './analyzer/co_country';
-import { InformationAnalyzer } from './analyzer/information';
 import { PerYearAnalyzer } from './analyzer/per_year_analyzer';
 import { AsyncUtils } from './utils/async_utils';
 import { FileUtils } from './utils/file_utils';
@@ -16,17 +16,17 @@ export class Main {
     private analyzerList: Analyzer[] = [];
 
     constructor() {
-        this.analyzerList.push(new CoFoundingAnalyzer());
+        //this.analyzerList.push(new FoundingAnalyzer());
         this.analyzerList.push(new PerYearAnalyzer());
-        this.analyzerList.push(new CoCountryAnalyzer());
-        // this.analyzerList.push(new InformationAnalyzer());
+        this.analyzerList.push(new PerYearCountryByFileAnalyzer());
+        // this.analyzerList.push(new CoCountryAnalyzer());
         this.analyzerList.push(new CoInstitutionAnalyzer());
     }
 
     public async start() {
         const startTimestamp = Date.now();
         console.log(`start ${startTimestamp}`);
-        const filePaths = await FileUtils.getAllFilePaths('./test');
+        const filePaths = await FileUtils.getAllFilePaths('./wos');
         const total = filePaths.length;
         const idMapping = {};
 
@@ -34,15 +34,15 @@ export class Main {
         let duplicateCount = 0;
 
         const parser = new WosParser();
-        parser.onRecord = (record: WosRecord) => {
+        parser.onRecord = (record: WosRecord, filePath: string) => {
 
             recordCount++;
             const ID = record.__ID;
+            this.scan(record, filePath, !!idMapping[ID]);
             if (idMapping[ID]) {
                 duplicateCount++;
             } else {
                 idMapping[ID] = true;
-                this.scan(record);
             }
         };
 
@@ -59,7 +59,7 @@ export class Main {
                 });
 
                 rl.on('line', (line: string) => {
-                    parser.exact(line);
+                    parser.exact(line, filePath);
                 });
 
                 rl.on('close', () => {
@@ -77,25 +77,25 @@ export class Main {
         cb();
     }
 
-    private scan(record: WosRecord) {
+    private scan(record: WosRecord, filePath: string, isDuplicate: boolean) {
         record.C1 = record.C1 || [];
         this.analyzerList.forEach((analyzer: Analyzer) => {
-            analyzer.scan(record);
+            analyzer.scan(record, isDuplicate, filePath);
         });
     }
 
     private async printResult() {
         while (this.analyzerList.length) {
             const analyzer = this.analyzerList.shift();
-            console.log(`process analyzer ${analyzer.name}`, new Date());
             const results = analyzer.getResultList();
-            console.log(`       result count:${results.length}`, new Date());
             while (results.length) {
                 const result = results.shift();
                 const outputPath = `./result/${analyzer.name}${result.name || ''}.txt`;
                 let line: string;
-                while (line = result.nextLine()) {
-                    fs.appendFileSync(outputPath, line + '\r\n', { encoding: 'utf-8' });
+                while ((line = result.nextLine()) !== undefined) {
+                    if (line) {
+                        fs.appendFileSync(outputPath, line + '\r\n', { encoding: 'utf-8' });
+                    }
                 }
                 console.log(`print result to ${outputPath}`, new Date());
             }

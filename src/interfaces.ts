@@ -1,6 +1,6 @@
 export interface Parser {
-    onRecord: (record: Record) => void;
-    exact(line: string): void;
+    onRecord: (record: Record, filePath: string) => void;
+    exact(line: string, filePath: string): void;
 }
 
 export interface Result {
@@ -15,7 +15,7 @@ export interface Record {
 
 export interface Analyzer {
     name: string;
-    scan(record: Record): void;
+    scan(record: Record, isDuplicate: boolean, filePath: string): void;
     getResultList(): Result[];
 }
 
@@ -65,6 +65,12 @@ export class WosRecord implements Record {
     UT: string;
     OA: string;
     DA: string;
+}
+
+export class Coperator {
+    key: string;
+    country: string;
+    fields: string[];
 }
 
 export const WosFields = {
