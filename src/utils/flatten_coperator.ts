@@ -25,7 +25,7 @@ export class FlattenCoperator {
                 for (let j = i + 1; j < coperators.length; j++) {
                     const other = coperators[j];
 
-                    if (self.key !== other.key) {
+                    // if (self.key !== other.key) {
                         this.data[year] = this.data[year] || {}
                         this.data[year][self.key] = this.data[year][self.key] || {};
                         this.data[year][self.key][other.key] = this.data[year][self.key][other.key] || {
@@ -33,7 +33,7 @@ export class FlattenCoperator {
                             count: 0
                         };
                         this.data[year][self.key][other.key].count++;
-                    }
+                    // }
                 }
             }
         }

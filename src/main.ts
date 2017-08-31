@@ -1,3 +1,4 @@
+import { CoCountryByDirectoryAnalyzer } from './analyzer/co_country_by_directory';
 import { FoundingAnalyzer } from './analyzer/founding_analyzer';
 import { PerYearCountryByFileAnalyzer } from './analyzer/per_year_country_by_file';
 import { CoInstitutionAnalyzer } from './analyzer/co_institution';
@@ -16,11 +17,12 @@ export class Main {
     private analyzerList: Analyzer[] = [];
 
     constructor() {
-        //this.analyzerList.push(new FoundingAnalyzer());
+        this.analyzerList.push(new FoundingAnalyzer());
         this.analyzerList.push(new PerYearAnalyzer());
         this.analyzerList.push(new PerYearCountryByFileAnalyzer());
-        // this.analyzerList.push(new CoCountryAnalyzer());
+        this.analyzerList.push(new CoCountryAnalyzer());
         this.analyzerList.push(new CoInstitutionAnalyzer());
+        this.analyzerList.push(new CoCountryByDirectoryAnalyzer());
     }
 
     public async start() {
@@ -32,9 +34,18 @@ export class Main {
 
         let recordCount = 0;
         let duplicateCount = 0;
+        let directoryDuplicateCount = 0;
 
+        const directoryDuplicateIDMap = {};
         const parser = new WosParser();
         parser.onRecord = (record: WosRecord, filePath: string) => {
+
+            if (directoryDuplicateIDMap[record.ID]) {
+                directoryDuplicateCount++;
+                return;
+            }
+
+            directoryDuplicateIDMap[record.ID] = true;
 
             recordCount++;
             const ID = record.__ID;
@@ -49,6 +60,7 @@ export class Main {
         const cb = () => {
             const timestamp = Date.now();
 
+            directoryDuplicateCount = 0;
             duplicateCount = 0;
             recordCount = 0;
 
@@ -64,7 +76,7 @@ export class Main {
 
                 rl.on('close', () => {
                     const memoryUsage = process.memoryUsage();
-                    console.log(`${total - filePaths.length}/${total}\t重复:${duplicateCount}\t记录:${recordCount}\t时间:${(Date.now() - timestamp) / 1000}\t${filePath}`);
+                    console.log(`${total - filePaths.length}/${total}\t重复:${duplicateCount}\t记录:${recordCount}\t目录内重复:${directoryDuplicateCount}\t时间:${(Date.now() - timestamp) / 1000}\t${filePath}`);
                     cb();
                 });
 

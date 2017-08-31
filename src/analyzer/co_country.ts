@@ -18,7 +18,7 @@ export class CoCountryAnalyzer implements Analyzer {
 
         const year = record[WosFields.出版年];
 
-        let countries = _.unique(WosRecordUtils.getCountries(record) || []);
+        let countries = WosRecordUtils.getCountries(record);
 
         if (countries.length) {
             this.coperator.addCoperators(year, countries.map((country) => {

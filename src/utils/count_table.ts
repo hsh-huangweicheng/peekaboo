@@ -14,7 +14,7 @@ export class Table {
         fields.reduce((obj, field, index: number) => {
             const isLast = (fields.length - 1) === index;
             if (isLast) {
-                const normalFiledName = WosRecordUtils.getShortName(field, 4);
+                const normalFiledName = WosRecordUtils.getShortName(field, 6);
                 obj[normalFiledName] = obj[normalFiledName] || 0;
                 obj[normalFiledName]++;
             } else {
