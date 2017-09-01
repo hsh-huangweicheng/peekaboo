@@ -4,9 +4,9 @@ import { WosRecordUtils, AfricaCountries } from './../utils/wos_record_utils';
 import { Result, Analyzer, WosFields, WosRecord } from './../interfaces';
 import * as _ from 'underscore';
 
-export class FoundingAnalyzer implements Analyzer {
+export class SubjectAnalyzer implements Analyzer {
 
-    public name: string = '基金统计（根据目录）';
+    public name: string = '学科（根据目录）';
 
     private list: string[][] = [];
 
@@ -14,15 +14,14 @@ export class FoundingAnalyzer implements Analyzer {
 
     private index = -1;
 
-    private table = new Table('', ['年', '接受国家', '基金', '篇数']);
+    private table = new Table('', ['年', '国家', '学科', '篇数']);
 
     public scan(record: WosRecord, isDuplicate: boolean, filePath: string): void {
-
         const year = WosRecordUtils.getPublishYear(record);
         const country = WosRecordUtils.getCountryFromPath(filePath);
-        const foundings = WosRecordUtils.getFoundings(record);
+        const subjects = WosRecordUtils.getSubjects(record);
 
-        foundings.forEach((founding: string) => {
+        subjects.forEach((founding: string) => {
             this.table.increaseCount(year, country, founding);
         });
     }

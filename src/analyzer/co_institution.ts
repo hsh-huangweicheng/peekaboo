@@ -24,7 +24,7 @@ export class CoInstitutionAnalyzer implements Analyzer {
             const inst = WosRecordUtils.getInstitutionByLine(line);
             if (inst) {
                 return {
-                    country, key: [country, inst].join('_').toLowerCase(), fields: [WosRecordUtils.getChineseCountryName(country) || country, inst]
+                    country, key: [country, inst].join('_').toLowerCase(), fields: [country, inst]
                 };
             } else {
                 console.log([inst, inst, line].join('@@'));

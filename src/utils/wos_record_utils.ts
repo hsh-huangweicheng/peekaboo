@@ -1,30 +1,301 @@
-import { I18N } from './wos_record_utils';
 import { WosRecord, WosFields } from './../interfaces';
 import * as _ from 'underscore';
 
 const PathCountryReg = /([^\x00-\xff]+)/;
 
 const CountryMap: { [key: string]: RegExp[] } = {
-    'usa': [/\busa\b/, /\bal$/, /\bdc$/, /\bak$/, /\baz$/, /\bar$/, /\bca$/, /\bco$/, /\bct$/, /\bde$/, /\bfl$/, /\bga$/, /\bhi$/, /\bid$/, /\bil$/, /\bin$/, /\bia$/, /\bks$/, /\bky$/, /\bla$/, /\bme$/, /\bmd$/, /\bma$/, /\bmi$/, /\bmn$/, /\bms$/, /\bmo$/, /\bmt$/, /\bne$/, /\bnv$/, /\bnh$/, /\bnj$/, /\bnm$/, /\bny$/, /\bnc$/, /\bnd$/, /\boh$/, /\bok$/, /\bor$/, /\bpa$/, /\bri$/, /\bsc$/, /\bsd$/, /\btn$/, /\btx$/, /\but$/, /\bvt$/, /\bva$/, /\bwa$/, /\bwv$/, /\bwi$/, /\bwy$/],
-    'china': [/\bchina\b/],
-    'congo, dem': [/\bcongo, dem rep\b/, /\b\congo, dem\b/, /\bdem rep congo\b/],
-    'congo, rep': [/\bcongo, rep\b/, /\brep of congo\b/, /\bcongo peopl rep\b/],
-    'egypt': [/\begypt, arab rep\b/],
+    '美国': [/\busa\b/, /\bal\W?$/, /\bdc\W?$/, /\bak\W?$/, /\baz\W?$/, /\bar\W?$/, /\bca\W?$/, /\bco\W?$/, /\bct\W?$/, /\bde\W?$/, /\bfl\W?$/, /\bga\W?$/, /\bhi\W?$/, /\bid\W?$/, /\bil\W?$/, /\bin\W?$/, /\bia\W?$/, /\bks\W?$/, /\bky\W?$/, /\bla\W?$/, /\bme\W?$/, /\bmd\W?$/, /\bma\W?$/, /\bmi\W?$/, /\bmn\W?$/, /\bms\W?$/, /\bmo\W?$/, /\bmt\W?$/, /\bne\W?$/, /\bnv\W?$/, /\bnh\W?$/, /\bnj\W?$/, /\bnm\W?$/, /\bny\W?$/, /\bnc\W?$/, /\bnd\W?$/, /\boh\W?$/, /\bok\W?$/, /\bor\W?$/, /\bpa\W?$/, /\bri\W?$/, /\bsc\W?$/, /\bsd\W?$/, /\btn\W?$/, /\btx\W?$/, /\but\W?$/, /\bvt\W?$/, /\bva\W?$/, /\bwa\W?$/, /\bwv\W?$/, /\bwi\W?$/, /\bwy\W?$/],
+    '中国': [/\bchina\b/],
+    '刚果（金）': [/\bcongo, dem rep\b/, /\b\congo, dem\b/, /\bdem rep congo\b/],
+    '刚果（布）': [/\bcongo, rep\b/, /\brep of congo\b/, /\bcongo peopl rep\b/],
+    '埃及': [/\begypt, arab rep\b/],
     'sao tome and principe': [/\bsao tome & prin\b/, /\bsao tome & principe\b/],
     'guinea bissau': [/\bguinea.?bissau\b/],
     'gambia': [/\bgambia\b/],
     'yemen': [/\byemen\b/],
     'uae': [/\bu arab emirates\b/],
-    'u.k': [/\bu.k\b/, /\bengland\b/],
+    '英国': [/\bu.k\b/, /\bengland\b/],
     'serbia': [/\bserbia\b/],
     'falkland': [/\bfalkland\b/],
     'dominica': [/\bdominica\b/],
     'saudi arabia': [/\bsaudi\b/],
+    'Congo, dem': [/\bCongo, dem/],
+    'Dominica': [/\bDominica/],
+    'Falkland': [/\bFalkland/],
+    'Serbia': [/\bSerbia/],
+    'U.K': [/\bU.K/],
+    'UAE': [/\bUAE/],
+    'USA': [/\bUSA/],
+    'YEMEN': [/\bYEMEN/],
+    'Saudi Arabia': [/\bSaudi Arabia/],
+    'afars & issas': [/\bafars & issas/],
+    'afghanistan': [/\bafghanistan/],
+    'africa': [/\bafrica/],
+    'agadir': [/\bagadir/],
+    'albania': [/\balbania/],
+    'andorra': [/\bandorra/],
+    'anguilla': [/\banguilla/],
+    'antigua & barbu': [/\bantigua & barbu/],
+    'argentina': [/\bargentina/],
+    'armenia': [/\barmenia/],
+    'aryanah': [/\baryanah/],
+    'australia': [/\baustralia/],
+    'austria': [/\baustria/],
+    'azerbaijan': [/\bazerbaijan/],
+    'bahamas': [/\bbahamas/],
+    'bahrain': [/\bbahrain/],
+    'bangladesh': [/\bbangladesh/],
+    'barbados': [/\bbarbados/],
+    'belgium': [/\bbelgium/],
+    'belize': [/\bbelize/],
+    'bermuda': [/\bbermuda/],
+    'bhutan': [/\bbhutan/],
+    'bolivia': [/\bbolivia/],
+    'bophuthatswana': [/\bbophuthatswana/],
+    'bosnia & herceg': [/\bbosnia & herceg/],
+    'brazil': [/\bbrazil/],
+    'brazil;': [/\bbrazil;/],
+    'brit virgin isl': [/\bbrit virgin isl/],
+    'britishvirgin': [/\bbritishvirgin/],
+    'brunei': [/\bbrunei/],
+    'bulgaria': [/\bbulgaria/],
+    'burma': [/\bburma/],
+    'byelarus': [/\bbyelarus/],
+    'cambodia': [/\bcambodia/],
+    'canada': [/\bcanada/],
+    'cape verde': [/\bcape verde/],
+    'cayman islands': [/\bcayman islands/],
+    'cent afr empire': [/\bcent afr empire/],
+    'cent afr republ': [/\bcent afr republ/],
+    'chile': [/\bchile/],
+    'ciskei': [/\bciskei/],
+    'colombia': [/\bcolombia/],
+    'congo, rep': [/\bcongo, rep/],
+    'cook islands': [/\bcook islands/],
+    'costa rica': [/\bcosta rica/],
+    'cote ivoire': [/\bcote ivoire/],
+    'crimea': [/\bcrimea/],
+    'croatia': [/\bcroatia/],
+    'cuba': [/\bcuba/],
+    'cyprus': [/\bcyprus/],
+    'czech republic': [/\bczech republic/],
+    'czechoslovakia': [/\bczechoslovakia/],
+    'denmark': [/\bdenmark/],
+    'dominican rep': [/\bdominican rep/],
+    'ecuador': [/\becuador/],
+    'el salvador': [/\bel salvador/],
+    'equat guinea': [/\bequat guinea/],
+    'estonia': [/\bestonia/],
+    'fed rep ger': [/\bfed rep ger/],
+    'fiji': [/\bfiji/],
+    'finland': [/\bfinland/],
+    'fr polynesia': [/\bfr polynesia/],
+    'france': [/\bfrance/],
+    'french guiana': [/\bfrench guiana/],
+    'ger dem rep': [/\bger dem rep/],
+    'germany': [/\bgermany/],
+    'gibraltar': [/\bgibraltar/],
+    'greece': [/\bgreece/],
+    'greenland': [/\bgreenland/],
+    'grenada': [/\bgrenada/],
+    'guadeloupe': [/\bguadeloupe/],
+    'guatemala': [/\bguatemala/],
+    'guernsey': [/\bguernsey/],
+    'guyana': [/\bguyana/],
+    'haiti': [/\bhaiti/],
+    'honduras': [/\bhonduras/],
+    'hong kong': [/\bhong kong/],
+    'hungary': [/\bhungary/],
+    'iceland': [/\biceland/],
+    'india': [/\bindia/],
+    'indonesia': [/\bindonesia/],
+    'iran': [/\biran/],
+    'iraq': [/\biraq/],
+    'iraw': [/\biraw/],
+    'ireland': [/\bireland/],
+    'israel': [/\bisrael/],
+    'italy': [/\bitaly/],
+    'ivory coast': [/\bivory coast/],
+    'jamaica': [/\bjamaica/],
+    'japan': [/\bjapan/],
+    'jersey': [/\bjersey/],
+    'jordan': [/\bjordan/],
+    'kazakhstan': [/\bkazakhstan/],
+    'kiribati': [/\bkiribati/],
+    'kosovo': [/\bkosovo/],
+    'kuwait': [/\bkuwait/],
+    'kyrgyzstan': [/\bkyrgyzstan/],
+    'laos': [/\blaos/],
+    'latvia': [/\blatvia/],
+    'lebanon': [/\blebanon/],
+    'liechtenstein': [/\bliechtenstein/],
+    'lithuania': [/\blithuania/],
+    'luxembourg': [/\bluxembourg/],
+    'macedonia': [/\bmacedonia/],
+    'malagasy republ': [/\bmalagasy republ/],
+    'malaysia': [/\bmalaysia/],
+    'maldives': [/\bmaldives/],
+    'malta': [/\bmalta/],
+    'marshall island': [/\bmarshall island/],
+    'martinique': [/\bmartinique/],
+    'mexico': [/\bmexico/],
+    'micronesia': [/\bmicronesia/],
+    'middele e': [/\bmiddele e/],
+    'moldova': [/\bmoldova/],
+    'monaco': [/\bmonaco/],
+    'mongol peo rep': [/\bmongol peo rep/],
+    'montenegro': [/\bmontenegro/],
+    'muretania': [/\bmuretania/],
+    'myanmar': [/\bmyanmar/],
+    'nepal': [/\bnepal/],
+    'neth antilles': [/\bneth antilles/],
+    'netherlands': [/\bnetherlands/],
+    'new caledonia': [/\bnew caledonia/],
+    'new zealand': [/\bnew zealand/],
+    'nicaragua': [/\bnicaragua/],
+    'north ireland': [/\bnorth ireland/],
+    'north korea': [/\bnorth korea/],
+    'norway': [/\bnorway/],
+    'oman': [/\boman/],
+    'pakistan': [/\bpakistan/],
+    'palau': [/\bpalau/],
+    'palestine': [/\bpalestine/],
+    'palestinian ter': [/\bpalestinian ter/],
+    'panama': [/\bpanama/],
+    'papua n guinea': [/\bpapua n guinea/],
+    'paraguay': [/\bparaguay/],
+    'peoples r china': [/\bpeoples r china/],
+    'peru': [/\bperu/],
+    'philippines': [/\bphilippines/],
+    'poland': [/\bpoland/],
+    'portugal': [/\bportugal/],
+    'puerto rico': [/\bpuerto rico/],
+    'qatar': [/\bqatar/],
+    'rabat maroc': [/\brabat maroc/],
+    'rep congo': [/\brep congo/],
+    'rep of georgia': [/\brep of georgia/],
+    'reunion': [/\breunion/],
+    'romania': [/\bromania/],
+    'russia': [/\brussia/],
+    'samoa': [/\bsamoa/],
+    'san marino': [/\bsan marino/],
+    'scotland': [/\bscotland/],
+    'senegambia': [/\bsenegambia/],
+    'sharja': [/\bsharja/],
+    'singapore': [/\bsingapore/],
+    'slovakia': [/\bslovakia/],
+    'slovenia': [/\bslovenia/],
+    'solomon islands': [/\bsolomon islands/],
+    'south': [/\bsouth/],
+    'south korea': [/\bsouth korea/],
+    'spain': [/\bspain/],
+    'sri lanka': [/\bsri lanka/],
+    'st kitts & nevi': [/\bst kitts & nevi/],
+    'st lucia': [/\bst lucia/],
+    'st vincent': [/\bst vincent/],
+    'surinam': [/\bsurinam/],
+    'sweden': [/\bsweden/],
+    'switzerland': [/\bswitzerland/],
+    'syria': [/\bsyria/],
+    'taiwan': [/\btaiwan/],
+    'tajikistan': [/\btajikistan/],
+    'tajikstan': [/\btajikstan/],
+    'thailand': [/\bthailand/],
+    'timor leste': [/\btimor leste/],
+    'tonga': [/\btonga/],
+    'transkei': [/\btranskei/],
+    'trinid & tobago': [/\btrinid & tobago/],
+    'troyes': [/\btroyes/],
+    'turkey': [/\bturkey/],
+    'turkmenistan': [/\bturkmenistan/],
+    'tuvalu': [/\btuvalu/],
+    'ukraine': [/\bukraine/],
+    'united kingdom': [/\bunited kingdom/],
+    'upper volta': [/\bupper volta/],
+    'uruguay': [/\buruguay/],
+    'ussr': [/\bussr/],
+    'utara malaysia': [/\butara malaysia/],
+    'uzbekistan': [/\buzbekistan/],
+    'vanuatu': [/\bvanuatu/],
+    'vatican': [/\bvatican/],
+    'venda': [/\bvenda/],
+    'venezuela': [/\bvenezuela/],
+    'vietnam': [/\bvietnam/],
+    'w ind assoc st': [/\bw ind assoc st/],
+    'wales': [/\bwales/],
+    'western sahara': [/\bwestern sahara/],
+    'western samoa': [/\bwestern samoa/],
+    'yugoslavia': [/\byugoslavia/],
+    'zaire': [/\bzaire/],
+    'algeria': [/\balgeria/],
+    'angola': [/\bangola/],
+    'benin': [/\bbenin/],
+    'botswana': [/\bbotswana/],
+    'burkina faso': [/\bburkina faso/],
+    'burundi': [/\bburundi/],
+    'cabo verde': [/\bcabo verde/],
+    'cameroon': [/\bcameroon/],
+    'central african republic': [/\bcentral african republic/],
+    'chad': [/\bchad/],
+    'comoros': [/\bcomoros/],
+    'congo': [/\bcongo/],
+    'congo, dem rep': [/\bcongo, dem rep/],
+    'cote d\'ivoire': [/\bcote d\'ivoire/],
+    'djibouti': [/\bdjibouti/],
+    'egypt': [/\begypt/],
+    'egypt, arab rep': [/\begypt, arab rep/],
+    'eritrea': [/\beritrea/],
+    'ethiopia': [/\bethiopia/],
+    'gabon': [/\bgabon/],
+    'ghana': [/\bghana/],
+    'guinea': [/\bguinea/],
+    'guinea-bissau': [/\bguinea-bissau/],
+    'kenya': [/\bkenya/],
+    'lesotho': [/\blesotho/],
+    'liberia': [/\bliberia/],
+    'libya': [/\blibya/],
+    'madagascar': [/\bmadagascar/],
+    'malawi': [/\bmalawi/],
+    'mali': [/\bmali/],
+    'mauritania': [/\bmauritania/],
+    'mauritius': [/\bmauritius/],
+    'morocco': [/\bmorocco/],
+    'mozambique': [/\bmozambique/],
+    'namibia': [/\bnamibia/],
+    'niger': [/\bniger/],
+    'nigeria': [/\bnigeria/],
+    'rwanda': [/\brwanda/],
+    'sao tome & prin': [/\bsao tome & prin/],
+    'senegal': [/\bsenegal/],
+    'seychelles': [/\bseychelles/],
+    'sierra leone': [/\bsierra leone/],
+    'somalia': [/\bsomalia/],
+    'south africa': [/\bsouth africa/],
+    'south sudan': [/\bsouth sudan/],
+    'sudan': [/\bsudan/],
+    'swaziland': [/\bswaziland/],
+    'tanzania': [/\btanzania/],
+    'togo': [/\btogo/],
+    'tunisia': [/\btunisia/],
+    'uganda': [/\buganda/],
+    'zambia': [/\bzambia/],
+    'zimbabwe': [/\bzimbabwe/],
+    'Angola': [/\bAngola/],
+    'Congo, Dem. Rep.': [/\bCongo, Dem. Rep./],
+    'Congo, Rep.': [/\bCongo, Rep./],
+    'Egypt, Arab Rep.': [/\bEgypt, Arab Rep./],
+    'Equatorial Guinea': [/\bEquatorial Guinea/],
+    'Gambia, The': [/\bGambia, The/],
+    'congo, dem. rep.': [/\bcongo, dem. rep./],
+    'congo, rep.': [/\bcongo, rep./],
+    'egypt, arab rep.': [/\begypt, arab rep./],
+    'equatorial guinea': [/\bequatorial guinea/],
+    'gambia, the': [/\bgambia, the/]
 };
 
 const SearchCountries = Object.keys(CountryMap);
 
-const CountryReg = /,?([^,\d]*).$/;
+const CountryReg = /,?([^,\.\d]*)\W?$/;
 const FirstCommaPartreg = /([^,]*),?/;
 
 export class WosRecordUtils {
@@ -32,13 +303,40 @@ export class WosRecordUtils {
     private static shortFiledNameToRealName = {};
 
     public static getFoundings(record: WosRecord): string[] {
-        return (record.FU || '').split(';').map(str => {
+        if (record['foundings']) {
+            return record['foundings'];
+        }
+
+        record['foundings'] = (record.FU || '').split(';').map(str => {
             const matchs = /([^\(\[]*)/.exec(str);
             if (matchs) {
                 return matchs[1].trim();
             }
             return str.trim();
         }).filter(str => str);
+
+        return record['foundings'];
+    }
+
+    public static getSubjects(record: WosRecord): string[] {
+        if (record['subjects']) {
+            return record['subjects'];
+        }
+        const subjects = (record.WC.toLowerCase() || '').split(';').map(str => str.trim()).filter(str => str);
+
+        record['subjects'] = _.chain(subjects).map((subject) => {
+
+            SubjectList.find((officialSubject) => {
+                if (subject.indexOf(officialSubject) >= 0) {
+                    subject = officialSubject;
+                    return true;
+                }
+            });
+
+            return subject;
+        }).uniq().value();
+
+        return record['subjects'];
     }
 
     public static getInititutionWithCountry(record: WosRecord): string[] {
@@ -48,7 +346,7 @@ export class WosRecordUtils {
     }
 
     public static getInstitutions(record: WosRecord): string[] {
-        const c1 = record.C1 || [];
+        const c1 = record.C1;
 
         return c1.map((line: string) => {
             return this.getInstitutionByLine(line);
@@ -72,8 +370,25 @@ export class WosRecordUtils {
     }
 
     public static getCountries(record: WosRecord): string[] {
-        const countries = record.C1.map(line => this.getCountryByLine(line)).filter(v => v);
-        return _.uniq(countries);
+        if (record['countries']) {
+            return record['countries'];
+        }
+
+        const lines = [...record.C1, ...record.RP.split(';')];
+        const countries = lines.map(line => {
+            const country = this.getCountryByLine(line);
+
+            // 去除两个字母的，可以能是人名
+            if (country && /^[a-z]{1,2}$/.test(country)) {
+                console.error(`${country}\t${line}`);
+                return;
+            }
+            return country && country.trim();
+        }).filter(v => v);
+
+        record['countries'] = _.uniq(countries);
+
+        return record['countries'];
     }
 
     public static getPublishYear(record: WosRecord): string {
@@ -85,10 +400,8 @@ export class WosRecordUtils {
     }
 
     public static getCountry(record: WosRecord): string {
-        return this.getCountryByLine(record.C1[0]);
+        return this.getCountries(record)[0];
     }
-
-
 
     public static getCountryByLine(line: string): string {
         if (!line) {
@@ -96,24 +409,29 @@ export class WosRecordUtils {
         }
 
         line = line.toLowerCase();
+
+        const found = SearchCountries.find((key) => {
+            return !!CountryMap[key].find((reg) => {
+                return reg.test(line);
+            });
+        });
+
+        if (found) {
+            return found;
+        }
+
         const matchs = CountryReg.exec(line);
         if (matchs) {
-            let country = matchs[1].trim();
-
-
-            const found = SearchCountries.find((key) => {
-                return !!CountryMap[key].find((reg) => {
-                    return reg.test(country);
-                });
-            });
-
-            return found || country;
+            return matchs[1].trim();
         }
     }
 
     public static getShortName(name: string, wordLimit: number = 4) {
-        const splits = name.toLowerCase().split(/\W+/);
+        const splits = name.toLowerCase().split(/[\s,&@]/);
         const shortName = _.difference(splits, ['of', 'the', 'and']).slice(0, wordLimit).join(' ');
+        if (!shortName) {
+            return name;
+        }
         // this.shortFiledNameToRealName[shortName] = name;
         return shortName;
     }
@@ -127,7 +445,10 @@ export class WosRecordUtils {
     }
 
     public static getChineseCountryName(country: string) {
-        return I18N[country.toLowerCase()];
+        if ('string' === typeof country) {
+            return AfricaCountries[country.toLowerCase()] || country;
+        }
+        return country;
     }
 }
 
@@ -538,3 +859,158 @@ const I18N = {
     'equatorial guinea': '赤道几内亚',
     'gambia, the': '冈比亚'
 }
+
+
+const SubjectList = [
+    'acoustics',
+    'agriculture',
+    'allergy',
+    'anatomy morphology',
+    'anesthesiology',
+    'anthropology',
+    'archaeology',
+    'architecture',
+    'area studies',
+    'art',
+    'arts humanities other topics',
+    'asian studies',
+    'astronomy astrophysics',
+    'audiology speech language pathology',
+    'automation control systems',
+    'behavioral sciences',
+    'biochemistry molecular biology',
+    'biodiversity conservation',
+    'biomedical social sciences',
+    'biophysics',
+    'biotechnology applied microbiology',
+    'business economics',
+    'cardiovascular system cardiology',
+    'cell biology',
+    'chemistry',
+    'classics',
+    'communication',
+    'computer science',
+    'construction building technology',
+    'criminology penology',
+    'crystallography',
+    'cultural studies',
+    'dance',
+    'demography',
+    'dentistry oral surgery medicine',
+    'dermatology',
+    'developmental biology',
+    'education educational research',
+    'electrochemistry',
+    'emergency medicine',
+    'endocrinology metabolism',
+    'energy fuels',
+    'engineering',
+    'entomology',
+    'environmental sciences ecology',
+    'ethnic studies',
+    'evolutionary biology',
+    'family studies',
+    'film radio television',
+    'fisheries',
+    'food science technology',
+    'forestry',
+    'gastroenterology hepatology',
+    'general internal medicine',
+    'genetics heredity',
+    'geochemistry geophysics',
+    'geography',
+    'geology',
+    'geriatrics gerontology',
+    'government law',
+    'health care sciences services',
+    'hematology',
+    'history',
+    'history philosophy of science',
+    'imaging science photographic technology',
+    'immunology',
+    'infectious diseases',
+    'information science library science',
+    'instruments instrumentation',
+    'integrative complementary medicine',
+    'international relations',
+    'legal medicine',
+    'life sciences biomedicine other topics',
+    'linguistics',
+    'literature',
+    'marine freshwater biology',
+    'materials science',
+    'mathematical computational biology',
+    'mathematical methods in social sciences',
+    'mathematics',
+    'mechanics',
+    'medical ethics',
+    'medical informatics',
+    'medical laboratory technology',
+    'metallurgy metallurgical engineering',
+    'meteorology atmospheric sciences',
+    'microbiology',
+    'microscopy',
+    'mineralogy',
+    'mining mineral processing',
+    'music',
+    'mycology',
+    'neurosciences neurology',
+    'nuclear science technology',
+    'nursing',
+    'nutrition dietetics',
+    'obstetrics gynecology',
+    'oceanography',
+    'oncology',
+    'operations research management science',
+    'ophthalmology',
+    'optics',
+    'orthopedics',
+    'otorhinolaryngology',
+    'paleontology',
+    'parasitology',
+    'pathology',
+    'pediatrics',
+    'pharmacology pharmacy',
+    'philosophy',
+    'physical geography',
+    'physics',
+    'physiology',
+    'plant sciences',
+    'polymer science',
+    'psychiatry',
+    'psychology',
+    'public administration',
+    'public environmental occupational health',
+    'radiology nuclear medicine medical imaging',
+    'rehabilitation',
+    'religion',
+    'remote sensing',
+    'reproductive biology',
+    'research experimental medicine',
+    'respiratory system',
+    'rheumatology',
+    'robotics',
+    'science technology other topics',
+    'social issues',
+    'social sciences other topics',
+    'social work',
+    'sociology',
+    'spectroscopy',
+    'sport sciences',
+    'substance abuse',
+    'surgery',
+    'telecommunications',
+    'theater',
+    'thermodynamics',
+    'toxicology',
+    'transplantation',
+    'transportation',
+    'tropical medicine',
+    'urban studies',
+    'urology nephrology',
+    'veterinary sciences',
+    'virology',
+    'water resources',
+    'women s studies',
+    'zoology   ',
+]

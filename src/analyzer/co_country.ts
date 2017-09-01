@@ -9,7 +9,7 @@ export class CoCountryAnalyzer implements Analyzer {
 
     private list: string[][] = [];
 
-    private coperator = new FlattenCoperator(['年', '国家','合作国家', '篇次']);
+    private coperator = new FlattenCoperator(['年', '国家', '合作国家', '篇次']);
 
     public scan(record: WosRecord, isDuplicate: boolean): void {
         if (isDuplicate) {
@@ -22,7 +22,7 @@ export class CoCountryAnalyzer implements Analyzer {
 
         if (countries.length) {
             this.coperator.addCoperators(year, countries.map((country) => {
-                return { key: country, country: country, fields: [WosRecordUtils.getChineseCountryName(country) || country] };
+                return { key: country, country: country, fields: [country] };
             }));
         }
     }

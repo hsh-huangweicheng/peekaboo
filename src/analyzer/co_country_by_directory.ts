@@ -19,9 +19,6 @@ export class CoCountryByDirectoryAnalyzer implements Analyzer {
     private table = new Table('', ['年', '国家', '合作国家', '篇数']);
 
     public scan(record: WosRecord, isDuplicate: boolean, filePath: string): void {
-        if (isDuplicate) {
-            return;
-        }
 
         const year = WosRecordUtils.getPublishYear(record);
         const country = WosRecordUtils.getCountryFromPath(filePath);

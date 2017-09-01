@@ -1,3 +1,6 @@
+import { OtherAnalyzer } from './analyzer/other_analyzer';
+import { SubjectAnalyzer } from './analyzer/subject_analyzer';
+import { WosRecordUtils } from './utils/wos_record_utils';
 import { CoCountryByDirectoryAnalyzer } from './analyzer/co_country_by_directory';
 import { FoundingAnalyzer } from './analyzer/founding_analyzer';
 import { PerYearCountryByFileAnalyzer } from './analyzer/per_year_country_by_file';
@@ -23,6 +26,8 @@ export class Main {
         this.analyzerList.push(new CoCountryAnalyzer());
         this.analyzerList.push(new CoInstitutionAnalyzer());
         this.analyzerList.push(new CoCountryByDirectoryAnalyzer());
+        this.analyzerList.push(new SubjectAnalyzer());
+        this.analyzerList.push(new OtherAnalyzer());
     }
 
     public async start() {
@@ -34,22 +39,26 @@ export class Main {
 
         let recordCount = 0;
         let duplicateCount = 0;
-        let directoryDuplicateCount = 0;
-
         const directoryDuplicateIDMap = {};
         const parser = new WosParser();
         parser.onRecord = (record: WosRecord, filePath: string) => {
-
-            if (directoryDuplicateIDMap[record.ID]) {
-                directoryDuplicateCount++;
+            if (+record.PY < 1960) {
                 return;
             }
 
-            directoryDuplicateIDMap[record.ID] = true;
+            const ID = record.__ID;
+            const countryFromPath = WosRecordUtils.getCountryFromPath(filePath);
+            directoryDuplicateIDMap[countryFromPath] = directoryDuplicateIDMap[countryFromPath] || {};
+            if (directoryDuplicateIDMap[countryFromPath][ID]) {
+                directoryDuplicateIDMap[countryFromPath][ID]++;
+                return;
+            }
+            directoryDuplicateIDMap[countryFromPath][ID] = 1;
 
             recordCount++;
-            const ID = record.__ID;
+
             this.scan(record, filePath, !!idMapping[ID]);
+
             if (idMapping[ID]) {
                 duplicateCount++;
             } else {
@@ -59,8 +68,6 @@ export class Main {
 
         const cb = () => {
             const timestamp = Date.now();
-
-            directoryDuplicateCount = 0;
             duplicateCount = 0;
             recordCount = 0;
 
@@ -76,13 +83,21 @@ export class Main {
 
                 rl.on('close', () => {
                     const memoryUsage = process.memoryUsage();
-                    console.log(`${total - filePaths.length}/${total}\t重复:${duplicateCount}\t记录:${recordCount}\t目录内重复:${directoryDuplicateCount}\t时间:${(Date.now() - timestamp) / 1000}\t${filePath}`);
+                    console.log(`${total - filePaths.length}/${total}\t重复:${duplicateCount}\t记录:${recordCount}\t时间:${(Date.now() - timestamp) / 1000}\t${filePath}`);
                     cb();
                 });
 
             } else {
                 this.printResult();
                 console.log(`end ${(Date.now() - startTimestamp) / 1000} s`);
+                const duplicateInDirectory = Object.keys(directoryDuplicateIDMap).map(key => {
+                    return Object.keys(directoryDuplicateIDMap[key]).map((ID) => {
+                        return [ID, directoryDuplicateIDMap[key][ID]];
+                    }).filter(([ID, count]) => {
+                        return count > 1;
+                    }).map(arr => arr.join('\t')).join('\r\n');
+                }).join('\r\n');
+                console.log(`目录内重复：\r\n${duplicateInDirectory}`);
             }
         }
 
@@ -113,6 +128,24 @@ export class Main {
             }
         };
     }
+
+
+    public async countLine() {
+        const filePaths = await FileUtils.getAllFilePaths('./test');
+        filePaths.forEach((path) => {
+            const content = '' + fs.readFileSync(path)
+            const reg = /^PT /gm;
+            let count = 0;
+            let matchs;
+            while (reg.exec(content)) {
+                count++;
+            }
+            if (500 !== count) {
+                console.log(`${count}\t${path}`);
+            }
+        });
+    }
+
 
 }
 

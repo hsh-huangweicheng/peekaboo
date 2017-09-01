@@ -15,6 +15,9 @@ export class Table {
             const isLast = (fields.length - 1) === index;
             if (isLast) {
                 const normalFiledName = WosRecordUtils.getShortName(field, 6);
+                if(!normalFiledName.trim()){
+                    console.log(field);
+                }
                 obj[normalFiledName] = obj[normalFiledName] || 0;
                 obj[normalFiledName]++;
             } else {
@@ -34,7 +37,7 @@ export class Table {
             if (keys.length) {
                 keys.forEach((key) => {
                     if ('number' === typeof obj[key]) {
-                        list.push([...fieldValues, WosRecordUtils.getRealName(key), obj[key]]);
+                        list.push([...fieldValues, key, obj[key]]);
                     } else {
                         getRecords(obj[key], [...fieldValues, key], list);
                     }
@@ -52,7 +55,7 @@ export class Table {
 
                         if (firstFieldValue) {
                             return getRecords(this.data[firstFieldValue]).map((arr: string[]) => {
-                                return [firstFieldValue, ...arr].join('\t');
+                                return [firstFieldValue, ...arr].map(v => WosRecordUtils.getChineseCountryName(v)).join('\t');
                             }).join('\r\n');
                         }
 
