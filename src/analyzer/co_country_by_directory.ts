@@ -8,7 +8,7 @@ const list = ['DC', 'AR', 'PA', 'NY', 'CA', 'GA'];
 
 export class CoCountryByDirectoryAnalyzer implements Analyzer {
 
-    public name: string = '国家间合作（根据目录）';
+    public name: string = '国家间合作（目录）';
 
     private list: string[][] = [];
 

@@ -5,7 +5,7 @@ import * as _ from 'underscore';
 
 export class PerYearCountryByFileAnalyzer implements Analyzer {
 
-    public name: string = '国家统计（根据目录）';
+    public name: string = '国家统计（目录）';
 
     private data = {};
 

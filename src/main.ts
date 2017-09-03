@@ -1,3 +1,4 @@
+import { ListToMatrix } from './list-to-matrix';
 import { OtherAnalyzer } from './analyzer/other_analyzer';
 import { SubjectAnalyzer } from './analyzer/subject_analyzer';
 import { WosRecordUtils } from './utils/wos_record_utils';
@@ -14,6 +15,7 @@ import { WosParser } from './parser/wos_parser';
 import * as fs from 'fs';
 import * as readline from 'readline';
 
+const listToMatrix = new ListToMatrix();
 const unit = 8 * 1024 * 1024;
 export class Main {
 
@@ -21,7 +23,7 @@ export class Main {
 
     constructor() {
         this.analyzerList.push(new FoundingAnalyzer());
-        this.analyzerList.push(new PerYearAnalyzer());
+        // this.analyzerList.push(new PerYearAnalyzer());
         this.analyzerList.push(new PerYearCountryByFileAnalyzer());
         this.analyzerList.push(new CoCountryAnalyzer());
         this.analyzerList.push(new CoInstitutionAnalyzer());
@@ -145,6 +147,7 @@ export class Main {
             }
         });
     }
+
 
 
 }

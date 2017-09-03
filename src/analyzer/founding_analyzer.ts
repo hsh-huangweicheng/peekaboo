@@ -6,7 +6,7 @@ import * as _ from 'underscore';
 
 export class FoundingAnalyzer implements Analyzer {
 
-    public name: string = '基金统计（根据目录）';
+    public name: string = '基金统计（目录）';
 
     private list: string[][] = [];
 

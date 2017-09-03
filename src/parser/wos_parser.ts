@@ -31,7 +31,7 @@ export class WosParser implements Parser {
 
         switch (this.field) {
             case 'PT':
-                this.record = { RP: '', C1: [] } as WosRecord;
+                this.record = { RP: '', C1: [], WC: '' } as WosRecord;
                 list.push(this.record);
                 break;
 
