@@ -14,16 +14,26 @@ import { Record, Analyzer, Result, WosRecord, Parser } from './interfaces';
 import { WosParser } from './parser/wos_parser';
 import * as fs from 'fs';
 import * as readline from 'readline';
+const makeDir = require('make-dir');
+const rimraf = require('rimraf');
 
 const listToMatrix = new ListToMatrix();
 const unit = 8 * 1024 * 1024;
+
+const dir = 'esi';
+
 export class Main {
 
     private analyzerList: Analyzer[] = [];
 
     constructor() {
+
+        rimraf(`./result/${dir}/**/*`, () => {
+            makeDir(`result/${dir}`);
+        });
+
         this.analyzerList.push(new FoundingAnalyzer());
-        // this.analyzerList.push(new PerYearAnalyzer());
+        this.analyzerList.push(new PerYearAnalyzer());
         this.analyzerList.push(new PerYearCountryByFileAnalyzer());
         this.analyzerList.push(new CoCountryAnalyzer());
         this.analyzerList.push(new CoInstitutionAnalyzer());
@@ -35,7 +45,7 @@ export class Main {
     public async start() {
         const startTimestamp = Date.now();
         console.log(`start ${startTimestamp}`);
-        const filePaths = await FileUtils.getAllFilePaths('./wos');
+        const filePaths = await FileUtils.getAllFilePaths(`./${dir}`);
         const total = filePaths.length;
         const idMapping = {};
 
@@ -119,7 +129,7 @@ export class Main {
             const results = analyzer.getResultList();
             while (results.length) {
                 const result = results.shift();
-                const outputPath = `./result/${analyzer.name}${result.name || ''}.txt`;
+                const outputPath = `./result/${dir}/${analyzer.name}${result.name || ''}.txt`;
                 let line: string;
                 while ((line = result.nextLine()) !== undefined) {
                     if (line) {

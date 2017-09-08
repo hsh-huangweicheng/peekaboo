@@ -21,8 +21,13 @@ export class CoCountryByDirectoryAnalyzer implements Analyzer {
     public scan(record: WosRecord, isDuplicate: boolean, filePath: string): void {
 
         const year = WosRecordUtils.getPublishYear(record);
-        const country = WosRecordUtils.getCountryFromPath(filePath);
+        let country = WosRecordUtils.getCountryFromPath(filePath);
         const coCountries = WosRecordUtils.getCountries(record);
+
+        // 从RP字段中分析出具体的国家
+        // if (_.contains(['刚果', '几内亚'], country)) {
+        //     country = WosRecordUtils.getChineseCountryName(coCountries[0]) || country;
+        // }
 
 
         coCountries.forEach((coCountry: string) => {

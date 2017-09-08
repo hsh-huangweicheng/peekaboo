@@ -8,7 +8,7 @@ export class PerYearAnalyzer implements Analyzer {
 
     private yearAllCountryCount: { [year: string]: { [country: string]: number } } = {};
 
-    public name: string = '各国每年论文数量';
+    public name: string = '国家统计';
 
 
     public scan(record: WosRecord, isDuplicate: boolean): void {

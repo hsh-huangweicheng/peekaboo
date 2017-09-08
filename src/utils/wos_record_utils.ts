@@ -379,19 +379,25 @@ export class WosRecordUtils {
 
         const lines = [...record.C1, ...record.RP.split(';')];
         const countries = lines.map(line => {
-            const country = this.getCountryByLine(line);
-
-            // 去除两个字母的，可以能是人名
-            if (country && /^[a-z]{1,2}$/.test(country)) {
-                console.error(`${country}\t${line}`);
-                return;
-            }
-            return country && country.trim();
+            return this.getCountryByLine(line);
         }).filter(v => v);
 
         record['countries'] = _.uniq(countries);
 
         return record['countries'];
+    }
+
+    public static getRPCountries(record): string[] {
+        if (record['rpCountries']) {
+            return record['rpCountries'];
+        }
+
+        record['rpCountries'] = record.RP.split(';').map(line => {
+            return this.getCountryByLine(line);
+        }).filter(v => v);
+        record['rpCountries'] = _.uniq(record['rpCountries']);
+
+        return record['rpCountries'];
     }
 
     public static getPublishYear(record: WosRecord): string {
@@ -413,20 +419,25 @@ export class WosRecordUtils {
 
         line = line.toLowerCase();
 
-        const found = SearchCountries.find((key) => {
+        let country = SearchCountries.find((key) => {
             return !!CountryMap[key].find((reg) => {
                 return reg.test(line);
             });
         });
 
-        if (found) {
-            return found;
+        if (!country) {
+            const matchs = CountryReg.exec(line);
+            if (matchs) {
+                country = matchs[1].trim();
+            }
         }
 
-        const matchs = CountryReg.exec(line);
-        if (matchs) {
-            return matchs[1].trim();
+        // 去除两个字母的，可以能是人名
+        if (country && /^[a-z]{1,2}$/.test(country)) {
+            return;
         }
+
+        return country;
     }
 
     public static getShortName(name: string, wordLimit: number = 4) {

@@ -12,6 +12,7 @@
     "@types/underscore": "^1.8.2",
     "@types/underscore.string": "0.0.31",
     "chai": "^4.1.1",
+    "make-dir": "^1.0.0",
     "mysql": "^2.14.1",
     "nodemon": "^1.11.0",
     "progress": "^2.0.0",
@@ -26,7 +27,7 @@
     "mocha": "^3.5.0"
   },
   "scripts": {
-    "start": "rimraf ./result/**/* && ts-node -- --max-old-space-size=3000  --max-nex-space-size=1024 ./src/main",
+    "start": "ts-node -- --max-old-space-size=3000  --max-nex-space-size=1024 ./src/main",
     "matrix": "ts-node -- --max-old-space-size=3000  --max-nex-space-size=1024 ./src/list-to-matrix",
     "start:js": "tsc && rimraf ./result/**/* && node --max-old-space-size=2000 ./build/main",
     "test": "mocha -r ts-node/register src/**/*spec.ts --watch --watch-extensions ts",
