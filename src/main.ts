@@ -1,13 +1,12 @@
+import { CountryAnalyzer } from './analyzer/country_analyzer';
 import { ListToMatrix } from './list-to-matrix';
 import { OtherAnalyzer } from './analyzer/other_analyzer';
 import { SubjectAnalyzer } from './analyzer/subject_analyzer';
 import { WosRecordUtils } from './utils/wos_record_utils';
 import { CoCountryByDirectoryAnalyzer } from './analyzer/co_country_by_directory';
 import { FoundingAnalyzer } from './analyzer/founding_analyzer';
-import { PerYearCountryByFileAnalyzer } from './analyzer/per_year_country_by_file';
 import { CoInstitutionAnalyzer } from './analyzer/co_institution';
 import { CoCountryAnalyzer } from './analyzer/co_country';
-import { PerYearAnalyzer } from './analyzer/per_year_analyzer';
 import { AsyncUtils } from './utils/async_utils';
 import { FileUtils } from './utils/file_utils';
 import { Record, Analyzer, Result, WosRecord, Parser } from './interfaces';
@@ -20,7 +19,7 @@ const rimraf = require('rimraf');
 const listToMatrix = new ListToMatrix();
 const unit = 8 * 1024 * 1024;
 
-const dir = 'esi';
+const dir = 'wos';
 
 export class Main {
 
@@ -33,8 +32,7 @@ export class Main {
         });
 
         this.analyzerList.push(new FoundingAnalyzer());
-        this.analyzerList.push(new PerYearAnalyzer());
-        this.analyzerList.push(new PerYearCountryByFileAnalyzer());
+        this.analyzerList.push(new CountryAnalyzer());
         this.analyzerList.push(new CoCountryAnalyzer());
         this.analyzerList.push(new CoInstitutionAnalyzer());
         this.analyzerList.push(new CoCountryByDirectoryAnalyzer());

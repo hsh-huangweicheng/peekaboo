@@ -1,0 +1,171 @@
+acoustics
+agricultural economics policy	economics & business	agricultural sciences
+agricultural engineering	engineering	agricultural sciences
+agriculture dairy animal science	computer science	space science	plant & animal science
+agriculture multidisciplinary	multidisciplinary
+agronomy
+allergy
+anatomy morphology
+anesthesiology
+anthropology
+archaeology
+architecture
+area studies
+art
+astronomy astrophysics
+automation control systems
+behavioral sciences	materials sciences	agricultural sciences	social sciences, general
+biochemical research methods
+biochemistry molecular biology	molecular biology & genetics	biology & biochemistry
+biodiversity conservation
+biology	molecular biology & genetics	biology & biochemistry
+biophysics
+business	economics & business
+cardiac cardiovascular systems
+cell tissue engineering	engineering
+chemistry analytical	chemistry
+chemistry applied	chemistry
+chemistry inorganic nuclear	chemistry
+chemistry medicinal	chemistry
+chemistry multidisciplinary	multidisciplinary	chemistry
+chemistry organic	chemistry
+chemistry physical	chemistry
+clinical neurology	clinical medicine
+communication
+computer science information systems	computer science	space science	plant & animal science
+computer science interdisciplinary applications	computer science	space science	plant & animal science
+computer science software engineering	engineering	computer science	space science	plant & animal science
+computer science theory methods	computer science	space science	plant & animal science
+construction building technology
+criminology penology
+critical care medicine	clinical medicine
+dermatology
+ecology	environment/ecology
+economics	economics & business
+education scientific disciplines
+electrochemistry
+emergency medicine	clinical medicine
+endocrinology metabolism
+energy fuels
+engineering aerospace	engineering
+engineering biomedical	engineering
+engineering chemical	engineering
+engineering civil	engineering
+engineering electrical electronic	engineering
+engineering environmental	engineering
+engineering industrial	engineering
+engineering manufacturing	engineering
+engineering mechanical	engineering
+engineering multidisciplinary	multidisciplinary	engineering
+entomology
+environmental sciences	materials sciences	agricultural sciences	social sciences, general
+environmental studies
+ethics
+family studies
+fisheries
+food science technology	computer science	space science	plant & animal science
+forestry
+gastroenterology hepatology
+genetics heredity	molecular biology & genetics
+geochemistry geophysics
+geography
+geology
+geosciences multidisciplinary	geosciences	multidisciplinary
+geriatrics gerontology
+gerontology
+green sustainable science technology	computer science	space science	plant & animal science
+health care sciences services	materials sciences	agricultural sciences	social sciences, general
+health policy services
+hematology
+history
+horticulture
+hospitality leisure sport tourism
+imaging science photographic technology	computer science	space science	plant & animal science
+immunology	immunology
+industrial relations labor
+infectious diseases
+information science library science	computer science	space science	plant & animal science
+instruments instrumentation
+international relations
+limnology
+linguistics
+logic
+management
+materials science biomaterials	materials sciences	computer science	space science	plant & animal science
+materials science ceramics	materials sciences	computer science	space science	plant & animal science
+materials science characterization testing	materials sciences	computer science	space science	plant & animal science
+materials science coatings films	materials sciences	computer science	space science	plant & animal science
+materials science composites	materials sciences	computer science	space science	plant & animal science
+materials science multidisciplinary	materials sciences	multidisciplinary	computer science	space science	plant & animal science
+mathematics	mathematics
+mechanics
+medical informatics
+medical laboratory technology
+medicine general internal	clinical medicine	social sciences, general
+medicine research experimental	clinical medicine
+metallurgy metallurgical engineering	engineering
+meteorology atmospheric sciences	materials sciences	agricultural sciences	social sciences, general
+mineralogy
+multidisciplinary sciences	materials sciences	multidisciplinary	agricultural sciences	social sciences, general
+mycology
+nanoscience nanotechnology
+neuroimaging
+neurosciences
+nuclear science technology	computer science	space science	plant & animal science
+nursing
+nutrition dietetics
+oceanography
+oncology
+ophthalmology
+optics
+ornithology
+paleontology
+parasitology
+pathology
+pediatrics
+peripheral vascular disease
+pharmacology pharmacy	pharmacology & toxicology
+physics applied	physics
+physics atomic molecular chemical	molecular biology & genetics	physics
+physics condensed matter	physics
+physics fluids plasmas	physics
+physics mathematical	physics
+physics multidisciplinary	multidisciplinary	physics
+physics nuclear	physics
+physiology
+planning development
+plant sciences	materials sciences	agricultural sciences	social sciences, general	plant & animal science
+political science	computer science	space science	plant & animal science
+polymer science	computer science	space science	plant & animal science
+psychiatry	psychology/psychiatry
+psychology	psychology/psychiatry
+public administration
+public environmental occupational health
+radiology nuclear medicine medical imaging	clinical medicine
+remote sensing
+respiratory system
+rheumatology
+social issues	social sciences, general
+social sciences biomedical	materials sciences	agricultural sciences	social sciences, general
+social sciences interdisciplinary	materials sciences	agricultural sciences	social sciences, general
+social sciences mathematical methods	materials sciences	agricultural sciences	social sciences, general
+social work	social sciences, general
+sociology
+soil science	computer science	space science	plant & animal science
+spectroscopy
+sport sciences	materials sciences	agricultural sciences	social sciences, general
+statistics probability
+substance abuse
+surgery
+thermodynamics
+toxicology	pharmacology & toxicology
+transplantation
+transportation
+tropical medicine	clinical medicine
+urban studies
+urology nephrology
+veterinary sciences	materials sciences	agricultural sciences	social sciences, general
+virology
+water resources
+women's studies
+zoology

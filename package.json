@@ -29,7 +29,7 @@
   "scripts": {
     "start": "ts-node -- --max-old-space-size=3000  --max-nex-space-size=1024 ./src/main",
     "matrix": "ts-node -- --max-old-space-size=3000  --max-nex-space-size=1024 ./src/list-to-matrix",
-    "start:js": "tsc && rimraf ./result/**/* && node --max-old-space-size=2000 ./build/main",
+    "start:js": "tsc && node --max-old-space-size=2000 ./build/main",
     "test": "mocha -r ts-node/register src/**/*spec.ts --watch --watch-extensions ts",
     "test:debug": "npm run test -- --inspect-brk",
     "xx": "ts-node ./src/analyzer/save_to_db.ts"
