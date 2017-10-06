@@ -1,9 +1,5 @@
-/node_modules
-/wos数据
+/data
+/lib
+/output
+/target
 /wos
-/result
-/build
-/result - 副本
-/ESI
-/test
-/三列表
