@@ -20,7 +20,8 @@ public class Main {
 
 		WosService wosService = new WosService();
 
-		wosService.setExporter(new TextExporter());
+		 wosService.setExporter(new TextExporter());
+//		wosService.setExporter(new ExcelExporter());
 
 		String outputDir = System.getProperty("user.dir") + "/output";
 		FileUtils.deleteDirectory(new File(outputDir));

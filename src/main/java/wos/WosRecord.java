@@ -46,6 +46,10 @@ public class WosRecord {
 		}
 	}
 
+	public String getYear() {
+		return this.getString("PY");
+	}
+
 	public List<String> getCountryList() {
 
 		if (null == countryList) {
@@ -71,8 +75,18 @@ public class WosRecord {
 		return this.path;
 	}
 
+	public int getCitedTimes() {
+		String citedTimes = this.getString("TC");
+		try {
+			return Integer.parseInt(citedTimes, 10);
+		} catch (NumberFormatException exception) {
+			return 0;
+		}
+	}
+
 	/**
 	 * 从C1或RP中解析出国家名称
+	 * 
 	 * @param line
 	 * @return
 	 */
@@ -96,5 +110,9 @@ public class WosRecord {
 		}
 
 		return countryName;
+	}
+
+	public String getFirstCountry() {
+		return this.getCountryList().get(0);
 	}
 }

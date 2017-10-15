@@ -1,20 +1,19 @@
 package utils;
 
-import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-
-import org.apache.commons.lang.StringUtils;
 
 public class Table {
 
 	private Map<String, Table> map = new ConcurrentHashMap<>();
 
-	private int count = 1;
+	private int total = 0;
+
+	private int times = 0;
 
 	private String[] fieldNames;
 
@@ -44,9 +43,22 @@ public class Table {
 		if (null == putIfAbsent) {
 			return newTable;
 		} else {
-			putIfAbsent.count++;
 			return putIfAbsent;
 		}
+	}
+
+	public void increase(int count) {
+		total = total + count;
+		times = 1;
+	}
+
+	public void increase() {
+		increase(1);
+	}
+
+	public void average(int count) {
+		total = total + count;
+		times++;
 	}
 
 	public List<List<String>> getTrList() {
@@ -59,9 +71,11 @@ public class Table {
 
 			if (childTrList.isEmpty()) {
 				// 最后一列是计数
+				DecimalFormat df = new DecimalFormat("0.00");
+				float result = childTable.total / (float) childTable.times;
 				List<String> list = new ArrayList<>();
 				list.add(key);
-				list.add("" + childTable.count);
+				list.add(df.format(result));
 				retList.add(list);
 			} else {
 				for (List<String> trList : childTrList) {

@@ -22,8 +22,8 @@ public class TableTest {
 	public void test1() {
 
 		Table table = new Table();
-		table.add("a");
-		table.add("b");
+		table.add("a").increase();
+		table.add("b").increase();
 
 		List<List<String>> trList = table.getTrList();
 
@@ -35,8 +35,8 @@ public class TableTest {
 	public void test2() {
 
 		Table table = new Table();
-		table.add("test");
-		table.add("test");
+		table.add("test").increase();
+		table.add("test").increase();
 		List<List<String>> trList = table.getTrList();
 
 		assertArrayEquals("", trList.get(0).toArray(), new String[] { "test", "2" });
@@ -46,8 +46,8 @@ public class TableTest {
 	public void test3() {
 
 		Table table = new Table();
-		table.add("a").add("b");
-		table.add("a").add("b");
+		table.add("a").add("b").increase();
+		table.add("a").add("b").increase();
 		List<List<String>> trList = table.getTrList();
 
 		assertArrayEquals("", trList.get(0).toArray(), new String[] { "a", "b", "2" });
@@ -58,14 +58,27 @@ public class TableTest {
 	public void test4() {
 
 		Table table = new Table();
-		table.add("a").add("b").add("c");
-		table.add("a").add("b").add("d");
-		table.add("a").add("e");
+		table.add("a").add("b").add("c").increase();
+		table.add("a").add("b").add("d").increase();
+		table.add("a").add("e").increase();
 		List<List<String>> trList = table.getTrList();
 
 		assertArrayEquals("", trList.get(0).toArray(), new String[] { "a", "b", "c", "1" });
 		assertArrayEquals("", trList.get(1).toArray(), new String[] { "a", "b", "d", "1" });
 		assertArrayEquals("", trList.get(2).toArray(), new String[] { "a", "e", "1" });
+
+	}
+
+	@Test
+	public void test5() {
+
+		Table table = new Table();
+		table.add("a").add("b").average(4);
+		table.add("a").add("b").average(3);
+		table.add("a").add("b").average(2);
+		List<List<String>> trList = table.getTrList();
+
+		assertArrayEquals("", trList.get(0).toArray(), new String[] { "a", "b", "3" });
 
 	}
 

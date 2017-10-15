@@ -33,10 +33,9 @@ public class ExcelExporter implements Exporter {
 						HSSFCell cell = row.createCell(j);
 						cell.setCellValue(list.get(j));
 					}
-
 				}
 
-				FileOutputStream fos = new FileOutputStream(new File(filePath+".xlsx"));
+				FileOutputStream fos = new FileOutputStream(new File(filePath + ".xlsx"));
 				workbook.write(fos);
 				fos.close();
 

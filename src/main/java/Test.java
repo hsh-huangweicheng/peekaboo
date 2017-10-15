@@ -1,12 +1,13 @@
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import utils.ResourceUtils;
 
 public class Test {
 
 	public static void main(String[] args) throws IOException {
+		DecimalFormat df=new DecimalFormat("0.00");
+		System.out.println(10 /(float) 3);
 	}
 
 	public static String convertCamelCase(String text) {
