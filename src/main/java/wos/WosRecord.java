@@ -12,13 +12,14 @@ import org.apache.commons.lang.StringUtils;
 
 import consts.RegConsts;
 import utils.CaseUtils;
+import utils.NameUtils;
 import utils.RegUtils;
 
 public class WosRecord {
 
 	private Map<String, List<String>> map = new HashMap<>();
 
-	private Pattern lastWordPattern = Pattern.compile("([ \\w]+)\\.?$");
+	private Pattern lastWordPattern = Pattern.compile("([& \\w]+)\\.?$");
 
 	private String path;
 
@@ -46,13 +47,14 @@ public class WosRecord {
 	public List<String> getCountryList() {
 		List<String> list = new ArrayList<>();
 
-		list.addAll(this.getList("C1"));
 		list.addAll(this.getList("RP"));
+		list.addAll(this.getList("C1"));
 
-		return list.stream().map((line) -> {
+		return list.parallelStream().map((line) -> {
 			String country = RegUtils.getMatchedKey(line, RegConsts.countryRegPairList);
 
 			if (StringUtils.isEmpty(country)) {
+				line = line.replaceAll("\\W+$", "");
 				Matcher matcher = lastWordPattern.matcher(line);
 				if (matcher.find()) {
 					country = matcher.group(1).trim();
@@ -60,7 +62,16 @@ public class WosRecord {
 				}
 			}
 
-			return country;
+//			return country;
+			
+			String countryName = NameUtils.getCountryName(country);
+
+			if (StringUtils.isEmpty(countryName)) {
+				System.err.println("[Country Error | " + country + "]\t" + line);
+				return country;
+			}
+
+			return countryName;
 		}).distinct().collect(Collectors.toList());
 
 	}

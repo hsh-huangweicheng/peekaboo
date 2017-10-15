@@ -12,6 +12,13 @@ public class RegUtils {
 
 		Optional<RegPair> findFirst = regPairList.stream().filter(regPair -> {
 
+			Pattern prePattern = regPair.getPattern();
+			if (null != prePattern) {
+				if (!prePattern.matcher(text).find()) {
+					return false;
+				}
+			}
+
 			Optional<Pattern> findAny = regPair.getPatternList().stream().filter((pattern) -> {
 				return pattern.matcher(text).find();
 			}).findAny();

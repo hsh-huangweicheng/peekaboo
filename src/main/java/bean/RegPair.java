@@ -11,13 +11,25 @@ public class RegPair {
 
 	private List<Pattern> patternList;
 
+	private Pattern pattern;
+
 	public RegPair(String name, String[] regs) {
 		this.name = name;
 		this.patternList = toPatterns(regs);
 	}
 
+	public RegPair(String name, String reg, String[] regs) {
+		this.name = name;
+		this.pattern = toPatterns(new String[] { reg }).get(0);
+		this.patternList = toPatterns(regs);
+	}
+
 	public String getName() {
 		return name;
+	}
+
+	public Pattern getPattern() {
+		return pattern;
 	}
 
 	private List<Pattern> toPatterns(String[] strs) {
