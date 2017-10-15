@@ -26,8 +26,7 @@ public class TextExporter implements Exporter {
 
 			try {
 				String fileName = filePath + "_" + table.getName() + ".txt";
-				FileUtils.writeLines(new File(fileName), "gb2312", list);
-				System.out.println(StringUtils.join(list.toArray()));
+				FileUtils.writeLines(new File(fileName),  list);
 				System.out.println("write file to " + fileName);
 			} catch (IOException e) {
 				e.printStackTrace();

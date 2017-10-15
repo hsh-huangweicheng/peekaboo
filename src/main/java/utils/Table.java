@@ -37,9 +37,9 @@ public class Table {
 		return this.fieldNames;
 	}
 
-	public Table add(String value) {
+	public Table add(Object value) {
 		Table newTable = new Table();
-		Table putIfAbsent = this.map.putIfAbsent(value, newTable);
+		Table putIfAbsent = this.map.putIfAbsent("" + value, newTable);
 
 		if (null == putIfAbsent) {
 			return newTable;

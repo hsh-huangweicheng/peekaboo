@@ -15,7 +15,7 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 
 		long timestamp = System.currentTimeMillis();
-		File baseDir = Paths.get(System.getProperty("user.dir"), "tmp").toFile();
+		File baseDir = Paths.get(System.getProperty("user.dir"), "data").toFile();
 		Collection<File> listFiles = FileUtils.listFiles(baseDir, null, true);
 
 		WosService wosService = new WosService();
@@ -26,8 +26,8 @@ public class Main {
 		FileUtils.deleteDirectory(new File(outputDir));
 
 		wosService.setOutputDir(outputDir);
-//		wosService.addAnalyzer(new FXAnalyzer());
-		 wosService.addAnalyzer(new BasicInfoAnalyzer());
+		// wosService.addAnalyzer(new FXAnalyzer());
+		wosService.addAnalyzer(new BasicInfoAnalyzer());
 
 		wosService.parse(listFiles);
 

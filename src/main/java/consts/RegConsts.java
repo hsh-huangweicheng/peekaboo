@@ -41,6 +41,8 @@ public abstract class RegConsts {
 
 		countryRegPairList.add(new RegPair("South Africa", new String[] { "Limpopo Province" }));
 
+		countryRegPairList.add(new RegPair("Israel", new String[] { "Israel" }));
+
 	}
 
 }

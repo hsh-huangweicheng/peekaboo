@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 
 import consts.RegConsts;
 import utils.CaseUtils;
-import utils.NameUtils;
+import utils.ResourceUtils;
 import utils.RegUtils;
 
 public class WosRecord {
@@ -22,6 +22,8 @@ public class WosRecord {
 	private Pattern lastWordPattern = Pattern.compile("([& \\w]+)\\.?$");
 
 	private String path;
+
+	private List<String> countryList;
 
 	public WosRecord() {
 	}
@@ -45,35 +47,20 @@ public class WosRecord {
 	}
 
 	public List<String> getCountryList() {
-		List<String> list = new ArrayList<>();
 
-		list.addAll(this.getList("RP"));
-		list.addAll(this.getList("C1"));
+		if (null == countryList) {
 
-		return list.parallelStream().map((line) -> {
-			String country = RegUtils.getMatchedKey(line, RegConsts.countryRegPairList);
+			List<String> list = new ArrayList<>();
 
-			if (StringUtils.isEmpty(country)) {
-				line = line.replaceAll("\\W+$", "");
-				Matcher matcher = lastWordPattern.matcher(line);
-				if (matcher.find()) {
-					country = matcher.group(1).trim();
-					country = CaseUtils.convertCamelCase(country);
-				}
-			}
+			list.addAll(this.getList("RP"));
+			list.addAll(this.getList("C1"));
 
-//			return country;
-			
-			String countryName = NameUtils.getCountryName(country);
+			countryList = list.parallelStream().map((line) -> {
+				return parseCountryFromLine(line);
+			}).distinct().collect(Collectors.toList());
+		}
 
-			if (StringUtils.isEmpty(countryName)) {
-				System.err.println("[Country Error | " + country + "]\t" + line);
-				return country;
-			}
-
-			return countryName;
-		}).distinct().collect(Collectors.toList());
-
+		return countryList;
 	}
 
 	public void setPath(String path) {
@@ -82,5 +69,32 @@ public class WosRecord {
 
 	public String getPath() {
 		return this.path;
+	}
+
+	/**
+	 * 从C1或RP中解析出国家名称
+	 * @param line
+	 * @return
+	 */
+	private String parseCountryFromLine(String line) {
+		String country = RegUtils.getMatchedKey(line, RegConsts.countryRegPairList);
+
+		if (StringUtils.isEmpty(country)) {
+			line = line.replaceAll("\\W+$", "");
+			Matcher matcher = lastWordPattern.matcher(line);
+			if (matcher.find()) {
+				country = matcher.group(1).trim();
+				country = CaseUtils.convertCamelCase(country);
+			}
+		}
+
+		String countryName = ResourceUtils.getCountryName(country);
+
+		if (StringUtils.isEmpty(countryName)) {
+			System.err.println("[Country Error | " + country + "]\t" + line);
+			return country;
+		}
+
+		return countryName;
 	}
 }
