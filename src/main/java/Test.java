@@ -1,35 +1,35 @@
 import java.io.IOException;
-import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Test {
 
 	public static void main(String[] args) throws IOException {
-		DecimalFormat df=new DecimalFormat("0.00");
-		System.out.println(10 /(float) 3);
+
+
+		String str = "National Institutes of Health [R01DC008333, R01DC013315]";
+
+
+		System.out.println(Arrays.asList(str.split("[\\[\\]\\(\\)]")));
 	}
 
-	public static String convertCamelCase(String text) {
-		Pattern pattern = Pattern.compile("(\\w{1})(\\w+)", Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(text);
+	public static void convertCamelCase(String text) {
+		Pattern pattern = Pattern.compile("");
 
-		StringBuffer sb = new StringBuffer();
-		int start = 0;
+		String str = "National Institutes of Health [R01DC008333, R01DC013315];";
 
+		Matcher matcher = pattern.matcher(str);
+		List<String> list = new ArrayList<>();
 		while (matcher.find()) {
-
-			String firstLetter = matcher.group(1);
-			String otherLetter = matcher.group(2);
-
-			sb.append(text.substring(start, matcher.start()));
-			sb.append(firstLetter.toUpperCase());
-			sb.append(otherLetter.toLowerCase());
-
-			start = matcher.end();
+			int groupCount = matcher.groupCount();
+			for (int i = 0; i < groupCount; i++) {
+				list.add(matcher.group(i));
+			}
 		}
 
-		sb.append(text.substring(start));
-		return sb.toString();
+		System.out.println(list.size() + "-" + list);
 	}
 }

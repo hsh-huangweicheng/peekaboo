@@ -10,7 +10,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import utils.Table;
+import table.Table;
 
 public class ExcelExporter implements Exporter {
 

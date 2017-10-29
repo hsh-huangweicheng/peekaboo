@@ -34,7 +34,7 @@ public class WosRecord {
 
 	public String getString(String fieldName) {
 		List<String> list = this.getList(fieldName);
-		return StringUtils.join(list, " ");
+		return StringUtils.join(list, " ").trim();
 	}
 
 	public List<String> getList(String fieldName) {
@@ -82,6 +82,13 @@ public class WosRecord {
 		} catch (NumberFormatException exception) {
 			return 0;
 		}
+	}
+
+	/**
+	 * 基金机构
+	 */
+	public List<String> getFoundList() {
+		return getList("FU");
 	}
 
 	/**

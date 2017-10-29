@@ -8,20 +8,20 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
-import bean.NamedEntityType;
 import bean.NamedEntity;
+import bean.NamedEntityType;
+import table.CountTable;
 import utils.NlpUtils;
-import utils.Table;
 import wos.WosRecord;
 
-public class FXAnalyzer extends Analyzer {
+public class NlpFXAnalyzer implements Analyzer {
 
 	private AtomicInteger count = new AtomicInteger(0);
 
-	private Table table;
+	private CountTable table;
 
-	public FXAnalyzer() {
-		table = new Table("default", new String[] { "UT", "TYPE", "ENTITY", "IDENDITY", "COUNT" });
+	public NlpFXAnalyzer() {
+		table = new CountTable("default", new String[] { "UT", "TYPE", "ENTITY", "IDENDITY", "COUNT" });
 	}
 
 	@Override
@@ -50,8 +50,8 @@ public class FXAnalyzer extends Analyzer {
 	}
 
 	@Override
-	public Table[] getTables() {
-		return new Table[] { table };
+	public CountTable[] getTables() {
+		return new CountTable[] { table };
 	}
 
 	@Override

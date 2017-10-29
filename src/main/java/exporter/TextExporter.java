@@ -8,20 +8,20 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
-import utils.Table;
+import table.Table;
 
 public class TextExporter implements Exporter {
 
 	@Override
 	public void export(Table[] tables, String filePath) {
-
+		String delimeter = "\t";
 		for (Table table : tables) {
 			List<String> list = new ArrayList<String>();
 
-			list.add(StringUtils.join(table.getFieldNames(), "\t"));
+			list.add(StringUtils.join(table.getFieldNames(), delimeter));
 
 			for (List<String> trList : table.getTrList()) {
-				list.add(StringUtils.join(trList, "\t"));
+				list.add(StringUtils.join(trList, delimeter));
 			}
 
 			try {

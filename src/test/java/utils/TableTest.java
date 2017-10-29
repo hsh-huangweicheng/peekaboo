@@ -8,6 +8,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import table.CountTable;
+
 public class TableTest {
 
 	@Before
@@ -21,7 +23,7 @@ public class TableTest {
 	@Test
 	public void test1() {
 
-		Table table = new Table();
+		CountTable table = new CountTable();
 		table.add("a").increase();
 		table.add("b").increase();
 
@@ -34,7 +36,7 @@ public class TableTest {
 	@Test
 	public void test2() {
 
-		Table table = new Table();
+		CountTable table = new CountTable();
 		table.add("test").increase();
 		table.add("test").increase();
 		List<List<String>> trList = table.getTrList();
@@ -45,7 +47,7 @@ public class TableTest {
 	@Test
 	public void test3() {
 
-		Table table = new Table();
+		CountTable table = new CountTable();
 		table.add("a").add("b").increase();
 		table.add("a").add("b").increase();
 		List<List<String>> trList = table.getTrList();
@@ -57,7 +59,7 @@ public class TableTest {
 	@Test
 	public void test4() {
 
-		Table table = new Table();
+		CountTable table = new CountTable();
 		table.add("a").add("b").add("c").increase();
 		table.add("a").add("b").add("d").increase();
 		table.add("a").add("e").increase();
@@ -72,7 +74,7 @@ public class TableTest {
 	@Test
 	public void test5() {
 
-		Table table = new Table();
+		CountTable table = new CountTable();
 		table.add("a").add("b").average(4);
 		table.add("a").add("b").average(3);
 		table.add("a").add("b").average(2);

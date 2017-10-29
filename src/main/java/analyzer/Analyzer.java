@@ -1,13 +1,13 @@
 package analyzer;
 
-import utils.Table;
+import table.Table;
 import wos.WosRecord;
 
-public abstract class Analyzer {
+public interface Analyzer {
 
-	public abstract void scan(WosRecord wosRecord);
+	public void scan(WosRecord wosRecord);
 
-	public abstract Table[] getTables();
+	public Table[] getTables();
 
-	public abstract String getName();
+	public String getName();
 }

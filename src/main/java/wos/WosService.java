@@ -12,7 +12,6 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
@@ -20,7 +19,7 @@ import org.apache.commons.lang.StringUtils;
 
 import analyzer.Analyzer;
 import exporter.Exporter;
-import utils.Table;
+import table.Table;
 
 public class WosService {
 

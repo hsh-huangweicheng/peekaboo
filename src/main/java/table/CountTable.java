@@ -1,4 +1,4 @@
-package utils;
+package table;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Table {
+public class CountTable implements Table {
 
-	private Map<String, Table> map = new ConcurrentHashMap<>();
+	private Map<String, CountTable> map = new ConcurrentHashMap<>();
 
 	private int total = 0;
 
@@ -19,12 +19,12 @@ public class Table {
 
 	private String name;
 
-	public Table(String name, String[] fieldNames) {
+	public CountTable(String name, String[] fieldNames) {
 		this.name = name;
 		this.fieldNames = fieldNames;
 	}
 
-	public Table() {
+	public CountTable() {
 		this("", new String[] {});
 	}
 
@@ -36,9 +36,9 @@ public class Table {
 		return this.fieldNames;
 	}
 
-	public Table add(Object value) {
-		Table newTable = new Table();
-		Table putIfAbsent = this.map.putIfAbsent("" + value, newTable);
+	public CountTable add(Object value) {
+		CountTable newTable = new CountTable();
+		CountTable putIfAbsent = this.map.putIfAbsent("" + value, newTable);
 
 		if (null == putIfAbsent) {
 			return newTable;
@@ -64,18 +64,23 @@ public class Table {
 	public List<List<String>> getTrList() {
 		List<List<String>> retList = new ArrayList<>();
 
-		for (Entry<String, Table> entry : map.entrySet()) {
+		for (Entry<String, CountTable> entry : map.entrySet()) {
 			String key = entry.getKey();
-			Table childTable = entry.getValue();
+			CountTable childTable = entry.getValue();
 			List<List<String>> childTrList = childTable.getTrList();
 
 			if (childTrList.isEmpty()) {
 				// 最后一列是计数
-				DecimalFormat df = new DecimalFormat("0.00");
-				float result = childTable.total / (float) childTable.times;
+				String result;
+				if (1 == childTable.times) {
+					result = "" + childTable.total / childTable.times;
+				} else {
+					DecimalFormat df = new DecimalFormat("0.00");
+					result = df.format(childTable.total / (float) childTable.times);
+				}
 				List<String> list = new ArrayList<>();
 				list.add(key);
-				list.add(df.format(result));
+				list.add(result);
 				retList.add(list);
 			} else {
 				for (List<String> trList : childTrList) {

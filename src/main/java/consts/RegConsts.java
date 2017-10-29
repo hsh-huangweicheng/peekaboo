@@ -24,7 +24,7 @@ public abstract class RegConsts {
 		countryRegPairList.add(new RegPair("England", new String[] { "England", "Scotland", "North Ireland", "U.K" }));
 		countryRegPairList.add(new RegPair("Saint Kitts and Nevis", new String[] { "St Kitts & Nevi", "Saint Kitts and Nevis", "St. Kitts and Nevis" }));
 		countryRegPairList.add(new RegPair("China", new String[] { "China" }));
-		countryRegPairList.add(new RegPair("UAE", new String[] { "U Arab Emirates", "UAE" }));
+		countryRegPairList.add(new RegPair("UAE", new String[] { "U Arab Emirates", "UAE", "United Arab Rep" }));
 
 		countryRegPairList.add(new RegPair("Rep Of Congo", "Congo", new String[] { "Brazzaville", "Brazaville", "Mossaka", "Pointe, Noire", "Pointe Noire",
 				"Kisangani", "LIKOUALA", "Owando", "Sibiti", "Loutété", "Dolisie", "Nkayi", "Impfondo", "Ouésso", "Madingou", "Benin" }));
@@ -42,6 +42,8 @@ public abstract class RegConsts {
 		countryRegPairList.add(new RegPair("South Africa", new String[] { "Limpopo Province" }));
 
 		countryRegPairList.add(new RegPair("Israel", new String[] { "Israel" }));
+
+		countryRegPairList.add(new RegPair("ZIMBABWE", new String[] { "ZIMBABWE" }));
 
 	}
 
