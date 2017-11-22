@@ -8,7 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import table.CountTable;
+import table.StatisticTable;
 
 public class TableTest {
 
@@ -23,7 +23,7 @@ public class TableTest {
 	@Test
 	public void test1() {
 
-		CountTable table = new CountTable();
+		StatisticTable table = new StatisticTable();
 		table.add("a").increase();
 		table.add("b").increase();
 
@@ -36,7 +36,7 @@ public class TableTest {
 	@Test
 	public void test2() {
 
-		CountTable table = new CountTable();
+		StatisticTable table = new StatisticTable();
 		table.add("test").increase();
 		table.add("test").increase();
 		List<List<String>> trList = table.getTrList();
@@ -47,7 +47,7 @@ public class TableTest {
 	@Test
 	public void test3() {
 
-		CountTable table = new CountTable();
+		StatisticTable table = new StatisticTable();
 		table.add("a").add("b").increase();
 		table.add("a").add("b").increase();
 		List<List<String>> trList = table.getTrList();
@@ -59,7 +59,7 @@ public class TableTest {
 	@Test
 	public void test4() {
 
-		CountTable table = new CountTable();
+		StatisticTable table = new StatisticTable();
 		table.add("a").add("b").add("c").increase();
 		table.add("a").add("b").add("d").increase();
 		table.add("a").add("e").increase();
@@ -74,7 +74,7 @@ public class TableTest {
 	@Test
 	public void test5() {
 
-		CountTable table = new CountTable();
+		StatisticTable table = new StatisticTable();
 		table.add("a").add("b").average(4);
 		table.add("a").add("b").average(3);
 		table.add("a").add("b").average(2);

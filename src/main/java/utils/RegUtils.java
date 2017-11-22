@@ -11,19 +11,7 @@ public class RegUtils {
 	public static String getMatchedKey(String text, List<RegPair> regPairList) {
 
 		Optional<RegPair> findFirst = regPairList.stream().filter(regPair -> {
-
-			Pattern prePattern = regPair.getPattern();
-			if (null != prePattern) {
-				if (!prePattern.matcher(text).find()) {
-					return false;
-				}
-			}
-
-			Optional<Pattern> findAny = regPair.getPatternList().stream().filter((pattern) -> {
-				return pattern.matcher(text).find();
-			}).findAny();
-			return findAny.isPresent();
-
+			return matchRegPair(text, regPair);
 		}).findFirst();
 
 		if (findFirst.isPresent()) {
@@ -31,6 +19,21 @@ public class RegUtils {
 		}
 
 		return "";
+	}
+
+	public static boolean matchRegPair(String text, RegPair regPair) {
+
+		Pattern prePattern = regPair.getPattern();
+		if (null != prePattern) {
+			if (!prePattern.matcher(text).find()) {
+				return false;
+			}
+		}
+
+		Optional<Pattern> findAny = regPair.getPatternList().stream().filter((pattern) -> {
+			return pattern.matcher(text).find();
+		}).findAny();
+		return findAny.isPresent();
 	}
 
 }

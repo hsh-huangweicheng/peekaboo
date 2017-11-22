@@ -7,38 +7,25 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class CountTable implements Table {
+public class StatisticTable extends Table {
 
-	private Map<String, CountTable> map = new ConcurrentHashMap<>();
+	private Map<String, StatisticTable> map = new ConcurrentHashMap<>();
 
 	private int total = 0;
 
 	private int times = 0;
 
-	private String[] fieldNames;
-
-	private String name;
-
-	public CountTable(String name, String[] fieldNames) {
-		this.name = name;
-		this.fieldNames = fieldNames;
+	public StatisticTable() {
+		super("", new String[] {});
 	}
 
-	public CountTable() {
-		this("", new String[] {});
+	public StatisticTable(String name, String[] fieldNames) {
+		super(name, fieldNames);
 	}
 
-	public String getName() {
-		return this.name;
-	}
-
-	public String[] getFieldNames() {
-		return this.fieldNames;
-	}
-
-	public CountTable add(Object value) {
-		CountTable newTable = new CountTable();
-		CountTable putIfAbsent = this.map.putIfAbsent("" + value, newTable);
+	public StatisticTable add(Object value) {
+		StatisticTable newTable = new StatisticTable();
+		StatisticTable putIfAbsent = this.map.putIfAbsent("" + value, newTable);
 
 		if (null == putIfAbsent) {
 			return newTable;
@@ -64,9 +51,9 @@ public class CountTable implements Table {
 	public List<List<String>> getTrList() {
 		List<List<String>> retList = new ArrayList<>();
 
-		for (Entry<String, CountTable> entry : map.entrySet()) {
+		for (Entry<String, StatisticTable> entry : map.entrySet()) {
 			String key = entry.getKey();
-			CountTable childTable = entry.getValue();
+			StatisticTable childTable = entry.getValue();
 			List<List<String>> childTrList = childTable.getTrList();
 
 			if (childTrList.isEmpty()) {

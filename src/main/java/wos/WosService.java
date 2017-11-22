@@ -31,12 +31,12 @@ public class WosService {
 
 	private List<Analyzer> analyzerList = new ArrayList<>();
 
-	private Exporter exporter;
+	private List<Exporter> exporterList = new ArrayList<>();
 
 	private String outputDir;
 
-	public void setExporter(Exporter exporter) {
-		this.exporter = exporter;
+	public void addExporter(Exporter exporter) {
+		this.exporterList.add(exporter);
 	}
 
 	public void addAnalyzer(Analyzer analyzer) {
@@ -56,8 +56,12 @@ public class WosService {
 			});
 
 			Table[] tables = analyzer.getTables();
-			this.exporter.export(tables, outputDir + "/" + analyzer.getName());
-			System.out.printf("end analyzer %s, %s, used %s milliseconds \n", analyzer.getName(), new Date(), System.currentTimeMillis() - timestamp);
+
+			this.exporterList.stream().forEach(exporter -> {
+				exporter.export(tables, outputDir + "/" + analyzer.getName());
+				System.out.printf("end analyzer %s, %s, used %s milliseconds \n", analyzer.getName(), new Date(), System.currentTimeMillis() - timestamp);
+			});
+
 		});
 
 	}

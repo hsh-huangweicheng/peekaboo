@@ -10,7 +10,7 @@ import org.apache.commons.lang.StringUtils;
 
 import bean.NamedEntity;
 import bean.NamedEntityType;
-import table.CountTable;
+import table.StatisticTable;
 import utils.NlpUtils;
 import wos.WosRecord;
 
@@ -18,10 +18,10 @@ public class NlpFXAnalyzer implements Analyzer {
 
 	private AtomicInteger count = new AtomicInteger(0);
 
-	private CountTable table;
+	private StatisticTable table;
 
 	public NlpFXAnalyzer() {
-		table = new CountTable("default", new String[] { "UT", "TYPE", "ENTITY", "IDENDITY", "COUNT" });
+		table = new StatisticTable("default", new String[] { "UT", "TYPE", "ENTITY", "IDENDITY", "COUNT" });
 	}
 
 	@Override
@@ -50,8 +50,8 @@ public class NlpFXAnalyzer implements Analyzer {
 	}
 
 	@Override
-	public CountTable[] getTables() {
-		return new CountTable[] { table };
+	public StatisticTable[] getTables() {
+		return new StatisticTable[] { table };
 	}
 
 	@Override

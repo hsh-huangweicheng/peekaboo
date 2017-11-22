@@ -6,8 +6,8 @@ import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 
-import analyzer.BasicInfoAnalyzer;
-import exporter.CSVExporter;
+import analyzer.CoperateAnalyzer;
+import exporter.TextExporter;
 import wos.WosService;
 
 public class Main {
@@ -15,14 +15,14 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 
 		long timestamp = System.currentTimeMillis();
-		File baseDir = Paths.get(System.getProperty("user.dir"), "tmp").toFile();
+		File baseDir = Paths.get(System.getProperty("user.dir"), "data").toFile();
 		Collection<File> listFiles = FileUtils.listFiles(baseDir, null, true);
 
 		WosService wosService = new WosService();
 
-		// wosService.setExporter(new TextExporter());
 		// wosService.setExporter(new ExcelExporter());
-		wosService.setExporter(new CSVExporter());
+		wosService.addExporter(new TextExporter());
+		// wosService.addExporter(new CSVExporter());
 
 		String outputDir = System.getProperty("user.dir") + "/output";
 		File outputFile = new File(outputDir);
@@ -30,9 +30,13 @@ public class Main {
 		outputFile.mkdirs();
 
 		wosService.setOutputDir(outputDir);
+
+		// wosService.addAnalyzer(new InfoAnalyzer());
 		// wosService.addAnalyzer(new FXAnalyzer());
 		// wosService.addAnalyzer(new RegexFXAnalyzer());
-		wosService.addAnalyzer(new BasicInfoAnalyzer());
+		// wosService.addAnalyzer(new FundAnalyzer());
+		// wosService.addAnalyzer(new InstAnalyzer());
+		wosService.addAnalyzer(new CoperateAnalyzer());
 
 		wosService.parse(listFiles);
 

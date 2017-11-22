@@ -2,11 +2,23 @@ package table;
 
 import java.util.List;
 
-public interface Table {
+public abstract class Table {
 
-	public String getName();
+	private String name;
+	private String[] fieldNames;
 
-	public String[] getFieldNames();
+	public Table(String name, String[] fieldNames) {
+		this.name = name;
+		this.fieldNames = fieldNames;
+	}
 
-	public List<List<String>> getTrList();
+	public String getName() {
+		return name;
+	}
+
+	public String[] getFieldNames() {
+		return fieldNames;
+	}
+
+	public abstract List<List<String>> getTrList();
 }

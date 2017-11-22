@@ -22,9 +22,9 @@ public class CSVExporter implements Exporter {
 		Arrays.stream(tables).parallel().forEach(table -> {
 			// 创建 CSVFormat
 			CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator(NEW_LINE_SEPARATOR);
-			String outputFilePath = filePath + "_" + table.getName() + ".csv";
+			String outputFilePath = filePath + table.getName() + ".csv";
 
-			try (FileWriter fileWriter = new FileWriter(filePath + "_" + table.getName() + ".csv");
+			try (FileWriter fileWriter = new FileWriter(filePath + table.getName() + ".csv");
 					CSVPrinter csvFilePrinter = new CSVPrinter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFilePath, true), "GBK")),
 							csvFileFormat)) {
 

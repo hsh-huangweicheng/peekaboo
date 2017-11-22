@@ -3,6 +3,7 @@ package utils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -16,10 +17,13 @@ public class ResourceUtils {
 
 	private static Set<String> africaSet = new HashSet<>();
 
+	private static List<String> chineseFundList = new ArrayList<>();
+
 	static {
 		try {
 			countryProps = loadAsProperties("country.properties");
 			africaSet = loadAsSet("africa.txt");
+			chineseFundList.addAll(loadAsSet("chinesefund.txt"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -31,6 +35,10 @@ public class ResourceUtils {
 
 	public static boolean isAfrica(String name) {
 		return africaSet.contains(name);
+	}
+
+	public static List<String> getChineseFundList() {
+		return chineseFundList;
 	}
 
 	private static Properties loadAsProperties(String path) throws IOException {
