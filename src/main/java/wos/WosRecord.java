@@ -1,6 +1,7 @@
 package wos;
 
 import java.io.Console;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,10 +13,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 
-import consts.RegConsts;
-import utils.CaseUtils;
-import utils.RegUtils;
-import utils.ResourceUtils;
+import utils.Utils;
 
 public class WosRecord {
 
@@ -30,10 +28,13 @@ public class WosRecord {
 	private Boolean hasChineseFund = null;
 
 	private Boolean hasChineseAuthor = null;
-	
+
 	private Boolean hasChineseInst = null;
 
-	public WosRecord() {
+	public File file;
+
+	public WosRecord(File file) {
+		this.file = file;
 	}
 
 	public void addField(String fieldName, List<String> lines) {
@@ -72,7 +73,7 @@ public class WosRecord {
 	public boolean hasChineseFund() {
 		if (null == hasChineseFund) {
 			boolean present = this.getFoundList().stream().filter(fund -> {
-				return RegUtils.matchRegPair(fund, RegConsts.chineseFundOrInstRegPair);
+				return Utils.matchRegPair(fund, Utils.chineseFundOrInstRegPair);
 			}).findAny().isPresent();
 
 			hasChineseFund = new Boolean(present);
@@ -99,7 +100,7 @@ public class WosRecord {
 
 	public List<String> getAfricaCountryList() {
 		return this.getCountryList().stream().filter(country -> {
-			return ResourceUtils.isAfrica(country);
+			return Utils.isAfrica(country);
 		}).collect(Collectors.toList());
 	}
 
@@ -144,18 +145,18 @@ public class WosRecord {
 	 * @return
 	 */
 	private String parseCountryFromLine(String line) {
-		String country = RegUtils.getMatchedKey(line, RegConsts.countryRegPairList);
+		String country = Utils.getMatchedKey(line, Utils.countryRegPairList);
 
 		if (StringUtils.isEmpty(country)) {
 			line = line.replaceAll("\\W+$", "");
 			Matcher matcher = lastWordPattern.matcher(line);
 			if (matcher.find()) {
 				country = matcher.group(1).trim();
-				country = CaseUtils.convertCamelCase(country);
+				country = Utils.convertCamelCase(country);
 			}
 		}
 
-		String countryName = ResourceUtils.getCountryName(country);
+		String countryName = Utils.getCountryName(country);
 
 		if (StringUtils.isEmpty(countryName)) {
 			System.err.println("[Country Error | " + country + "]\t" + line);

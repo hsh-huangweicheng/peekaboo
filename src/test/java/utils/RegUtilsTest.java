@@ -27,9 +27,9 @@ public class RegUtilsTest {
 
 		list.add(new RegPair("USA", new String[] { "USA" }));
 
-		assertEquals("USA", RegUtils.getMatchedKey("USA", list));
-		assertEquals("USA", RegUtils.getMatchedKey("usa", list));
-		assertEquals("USA", RegUtils.getMatchedKey(" usa]", list));
+		assertEquals("USA", Utils.getMatchedKey("USA", list));
+		assertEquals("USA", Utils.getMatchedKey("usa", list));
+		assertEquals("USA", Utils.getMatchedKey(" usa]", list));
 	}
 
 }

@@ -1,4 +1,3 @@
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -10,10 +9,8 @@ import analyzer.NlpFXAnalyzer;
 import exporter.TextExporter;
 import wos.WosService;
 
-public class Main {
-
+public class NLP {
 	public static void main(String[] args) throws IOException {
-
 		long timestamp = System.currentTimeMillis();
 		File baseDir = Paths.get(System.getProperty("user.dir"), "data").toFile();
 		File nlpOutputFile = Paths.get(System.getProperty("user.dir"), "output", "nlp.txt").toFile();
@@ -22,28 +19,21 @@ public class Main {
 
 		WosService wosService = new WosService();
 
-		// wosService.setExporter(new ExcelExporter());
 		wosService.addExporter(new TextExporter());
-		// wosService.addExporter(new CSVExporter());
 
 		String outputDir = System.getProperty("user.dir") + "/output";
+
+		System.out.println("import from [" + baseDir.getAbsolutePath() + "], export to [" + nlpOutputFile.getAbsolutePath() + "]");
+
 		File outputFile = new File(outputDir);
-		FileUtils.deleteDirectory(outputFile);
 		outputFile.mkdirs();
 
 		wosService.setOutputDir(outputDir);
 
-		// wosService.addAnalyzer(new InfoAnalyzer());
-		// wosService.addAnalyzer(new FXAnalyzer());
-		// wosService.addAnalyzer(new RegexFXAnalyzer());
-		// wosService.addAnalyzer(new FundAnalyzer());
-		// wosService.addAnalyzer(new InstAnalyzer());
 		wosService.addAnalyzer(new NlpFXAnalyzer(nlpOutputFile));
-		// wosService.addAnalyzer(new CoperateAnalyzer());
 
 		wosService.parse(listFiles);
 
 		System.out.println((System.currentTimeMillis() - timestamp) / 1000);
-
 	}
 }

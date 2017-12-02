@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -44,39 +43,29 @@ public class WosService {
 	}
 
 	public void parse(Collection<File> listFiles) {
-		total = listFiles.size();
+		AtomicInteger count = new AtomicInteger(0);
+		listFiles.stream().parallel().forEach(file -> {
+			List<WosRecord> recordList = fileToWosRecord(file);
 
-		Stream<WosRecord> wosRecordStream = this.getWosRecordStream(listFiles);
-
-		this.analyzerList.parallelStream().forEach((analyzer) -> {
 			long timestamp = System.currentTimeMillis();
-			System.out.printf("begin analyzer %s, %s\n", analyzer.getName(), new Date());
-			wosRecordStream.parallel().forEach((wosRecord) -> {
-				analyzer.scan(wosRecord);
+
+			this.analyzerList.parallelStream().forEach((analyzer) -> {
+				recordList.parallelStream().forEach((wosRecord) -> {
+					analyzer.scan(wosRecord);
+				});
 			});
 
-			Table[] tables = analyzer.getTables();
-
-			this.exporterList.stream().forEach(exporter -> {
-				exporter.export(tables, outputDir + "/" + analyzer.getName());
-				System.out.printf("end analyzer %s, %s, used %s milliseconds \n", analyzer.getName(), new Date(), System.currentTimeMillis() - timestamp);
-			});
-
+			System.out.printf("[%s/%s %8dms] %s", count.incrementAndGet(), listFiles.size(), System.currentTimeMillis() - timestamp, file.getAbsolutePath());
 		});
 
-	}
-
-	private Stream<WosRecord> getWosRecordStream(Collection<File> listFiles) {
-		return listFiles.parallelStream().map(file -> {
-
-			List<String> lineList = readLines(file);
-			List<WosRecord> linesToWosRecord = linesToWosRecord(lineList);
-
-			linesToWosRecord.stream().forEach(record -> record.setPath(file.getAbsolutePath()));
-
-			return linesToWosRecord;
-
-		}).flatMap(u -> u.stream());
+		this.analyzerList.forEach((analyzer) -> {
+			Table[] tables = analyzer.getTables();
+			if (null != tables) {
+				this.exporterList.stream().forEach(exporter -> {
+					exporter.export(tables, outputDir + "/" + analyzer.getName());
+				});
+			}
+		});
 	}
 
 	/**
@@ -102,8 +91,8 @@ public class WosService {
 	 * @param lines
 	 * @return
 	 */
-	private List<WosRecord> linesToWosRecord(List<String> lineList) {
-
+	private List<WosRecord> fileToWosRecord(File file) {
+		List<String> lineList = readLines(file);
 		List<WosRecord> wosRecordList = new ArrayList<WosRecord>();
 		List<String> list = new ArrayList<>();
 
@@ -128,7 +117,7 @@ public class WosService {
 
 			switch (fieldName) {
 				case "PT":
-					wosRecord = new WosRecord();
+					wosRecord = new WosRecord(file);
 					break;
 
 				case "ER":

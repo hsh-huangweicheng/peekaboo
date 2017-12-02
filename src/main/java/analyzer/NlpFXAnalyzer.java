@@ -1,27 +1,50 @@
 package analyzer;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
 import bean.NamedEntity;
 import bean.NamedEntityType;
-import table.StatisticTable;
+import table.Table;
 import utils.NlpUtils;
 import wos.WosRecord;
 
 public class NlpFXAnalyzer implements Analyzer {
 
-	private AtomicInteger count = new AtomicInteger(0);
+	private Set<String> utSet = new HashSet<>();
 
-	private StatisticTable table;
+	private File outputFile;
 
-	public NlpFXAnalyzer() {
-		table = new StatisticTable("default", new String[] { "UT", "TYPE", "ENTITY", "IDENDITY", "COUNT" });
+	public NlpFXAnalyzer(File outputFile) {
+		this.outputFile = outputFile;
+
+		if (null != outputFile) {
+			try {
+				if (outputFile.exists()) {
+					List<String> readLines = FileUtils.readLines(outputFile, "UTF-8");
+					readLines.forEach(line -> {
+						if (StringUtils.isNotBlank(line)) {
+							utSet.add(line.split("\t")[0]);
+						}
+					});
+				} else {
+					String header = StringUtils.join(new String[] { "UT", "TYPE", "NAME", "IDENDITY" }, "\t");
+					FileUtils.writeLines(outputFile, Arrays.asList(new String[] { header }));
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
@@ -30,33 +53,50 @@ public class NlpFXAnalyzer implements Analyzer {
 		String utValue = wosRecord.getString("UT");
 		String fxValue = wosRecord.getString("FX");
 
-		if (!StringUtils.isEmpty(fxValue)) {
+		if (utSet.contains(utValue)) {
+			System.out.println("\t" + utValue + " aleady processed.");
+			return;
+		}
+
+		if (StringUtils.isNotBlank(fxValue)) {
 
 			long timestamp = System.currentTimeMillis();
+			int size = -1;
+			try {
+				List<NamedEntity> namedEntityList = NlpUtils.getNamedEntityList(fxValue);
+				List<String> identityOfNamedEntity = getIdentityOfNamedEntity(namedEntityList, fxValue);
 
-			List<NamedEntity> namedEntityList = NlpUtils.getNamedEntityList(fxValue);
-			List<String> identityOfNamedEntity = getIdentityOfNamedEntity(namedEntityList, fxValue);
+				List<String> lines = new ArrayList<>();
+				size = namedEntityList.size();
+				for (int i = 0; i < size; i++) {
+					NamedEntity namedEntity = namedEntityList.get(i);
+					String identity = identityOfNamedEntity.get(i);
+					lines.add(StringUtils.join(new String[] { utValue, namedEntity.type, namedEntity.name, identity }, "\t"));
+				}
 
-			int size = namedEntityList.size();
-			for (int i = 0; i < size; i++) {
-				NamedEntity namedEntity = namedEntityList.get(i);
-				String identity = identityOfNamedEntity.get(i);
-				table.add(utValue).add(namedEntity.type).add(namedEntity.name).add(identity);
+				if (null != outputFile) {
+					try {
+						FileUtils.writeLines(this.outputFile, lines, true);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+
+			} finally {
+				System.out.printf("\t%s in [%s] found [%2d] entities, used [%3.3f] seconds\r\n", utValue, wosRecord.file.getAbsolutePath(), size,
+						(System.currentTimeMillis() - timestamp) / 1000.0);
 			}
-
-			System.out.printf("%s %s find %s entities, use [%s] milliseconds\r\n", count.incrementAndGet(), utValue, size,
-					System.currentTimeMillis() - timestamp);
 		}
 	}
 
 	@Override
-	public StatisticTable[] getTables() {
-		return new StatisticTable[] { table };
+	public Table[] getTables() {
+		return null;
 	}
 
 	@Override
 	public String getName() {
-		return "FX";
+		return "NLP";
 	}
 
 	private List<String> getIdentityOfNamedEntity(List<NamedEntity> namedEntityList, String text) {

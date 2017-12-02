@@ -12,7 +12,7 @@ public class FXAnalyzerTest {
 	@Test
 	public void test1() {
 
-		NlpFXAnalyzer fxAnalyzer = new NlpFXAnalyzer();
+		NlpFXAnalyzer fxAnalyzer = new NlpFXAnalyzer(null);
 		List<String[]> list = new ArrayList<>();
 		list.add(new String[] { "[R01DC008333]", "R01DC008333" });
 		list.add(new String[] { "xx R01DC008333]", "R01DC008333" });

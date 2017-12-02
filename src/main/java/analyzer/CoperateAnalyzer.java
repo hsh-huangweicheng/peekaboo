@@ -8,7 +8,6 @@ import java.util.Set;
 
 import table.CategoryTable;
 import table.Table;
-import utils.ResourceUtils;
 import utils.Utils;
 import wos.WosRecord;
 
@@ -74,7 +73,7 @@ public class CoperateAnalyzer implements Analyzer {
 		String firstCountry = wosRecord.getFirstCountry();
 		int citedTimes = wosRecord.getCitedTimes();
 
-		if (ResourceUtils.isAfrica(firstCountry)) {
+		if (Utils.isAfrica(firstCountry)) {
 			citedCountByCountryTable.increase(firstCountry + "(主导)", year + "(被引)", citedTimes);
 			citedCountByCountryTable.increase(firstCountry + "(主导)", year + "(篇数)");
 		}
@@ -89,7 +88,7 @@ public class CoperateAnalyzer implements Analyzer {
 		firstCountryByDurationTable.increase(wosRecord.getFirstCountry(), Utils.getYearGroup(wosRecord.getYear()) + "(主导)");
 		wosRecord.getCountryList().forEach(country -> {
 			firstCountryByDurationTable.increase(country, Utils.getYearGroup(wosRecord.getYear()) + "(总篇次)");
-			if (ResourceUtils.isAfrica(country)) {
+			if (Utils.isAfrica(country)) {
 				firstCountryByDurationTable.increase(country, "非洲", 0);
 			}
 		});
@@ -133,7 +132,7 @@ public class CoperateAnalyzer implements Analyzer {
 			}
 		});
 
-		if (ResourceUtils.isAfrica(firstCountry)) {
+		if (Utils.isAfrica(firstCountry)) {
 			citedCountByYearTable.increase(year, "非洲主导被引", citedTimes);
 			citedCountByYearTable.increase(year, "非洲主导篇数");
 		}
@@ -171,7 +170,7 @@ public class CoperateAnalyzer implements Analyzer {
 				}
 			});
 
-			if (ResourceUtils.isAfrica(firstCountry)) {
+			if (Utils.isAfrica(firstCountry)) {
 				citedCountByYearTable.increase(year, "非洲主导篇数(0被引)");
 			}
 
@@ -210,7 +209,7 @@ public class CoperateAnalyzer implements Analyzer {
 
 		firstCountryCountTable.increase(firstCountry, "篇次");
 
-		if (ResourceUtils.isAfrica(firstCountry)) {
+		if (Utils.isAfrica(firstCountry)) {
 			firstCountryCountTable.increase(firstCountry, "是否非洲", 0);
 		}
 	}
@@ -221,7 +220,7 @@ public class CoperateAnalyzer implements Analyzer {
 		List<String> countryList = wosRecord.getCountryList();
 
 		countryList.forEach(country -> {
-			if (ResourceUtils.isAfrica(country)) {
+			if (Utils.isAfrica(country)) {
 				africaCountryList.add(country);
 			} else {
 				otherCountryList.add(country);
@@ -258,7 +257,7 @@ public class CoperateAnalyzer implements Analyzer {
 
 	private void otherCountryCount(WosRecord wosRecord) {
 		wosRecord.getCountryList().parallelStream().filter(country -> {
-			return !ResourceUtils.isAfrica(country);
+			return !Utils.isAfrica(country);
 		}).forEach(country -> {
 			otherCountryCountTable.increase(country, "篇数");
 			otherCountryCountTable.increase(country, wosRecord.getYear());

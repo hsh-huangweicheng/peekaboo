@@ -3,7 +3,7 @@ package analyzer;
 import table.CategoryTable;
 import table.StatisticTable;
 import table.Table;
-import utils.FundUtils;
+import utils.Utils;
 import wos.WosRecord;
 
 public class InstAnalyzer implements Analyzer {
@@ -25,7 +25,7 @@ public class InstAnalyzer implements Analyzer {
 
 		wosRecord.getList("C1").parallelStream().forEach(line -> {
 
-			if (FundUtils.isChineseFundOrInst(line)) {
+			if (Utils.isChineseFundOrInst(line)) {
 
 				int indexOfChar = endIndexOf(line, "]");
 				if (indexOfChar < 0) {

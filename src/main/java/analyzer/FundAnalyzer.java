@@ -6,8 +6,7 @@ import org.apache.commons.lang.StringUtils;
 
 import table.CategoryTable;
 import table.Table;
-import utils.FundUtils;
-import utils.ResourceUtils;
+import utils.Utils;
 import wos.WosRecord;
 
 public class FundAnalyzer implements Analyzer {
@@ -52,7 +51,7 @@ public class FundAnalyzer implements Analyzer {
 		String wc = wosRecord.getString("WC");
 		String year = wosRecord.getYear();
 		Arrays.stream(wc.split(";")).map(String::trim).filter(StringUtils::isNotEmpty).forEach(str -> {
-			if (FundUtils.hasChineseFund(wosRecord)) {
+			if (Utils.hasChineseFund(wosRecord)) {
 				this.wcTable.increase(str, "中国-" + year);
 			}
 
@@ -102,7 +101,7 @@ public class FundAnalyzer implements Analyzer {
 			}
 		}
 
-		if (hasFound && FundUtils.hasChineseFund(wosRecord)) {
+		if (hasFound && Utils.hasChineseFund(wosRecord)) {
 			this.articleCitedByYearTable.increase(year, "中国-记录");
 			this.articleCitedByYearTable.increase(year, "中国-论文被引次数", citedTimes);
 
@@ -117,7 +116,7 @@ public class FundAnalyzer implements Analyzer {
 		boolean hasFound = !wosRecord.getFoundList().isEmpty();
 		wosRecord.getCountryList().stream().forEach(country -> {
 			// 只统计非洲国家
-			if (ResourceUtils.isAfrica(country)) {
+			if (Utils.isAfrica(country)) {
 				articleCountOfCountryTable.increase(country, "论文总量");
 				if (hasFound) {
 					articleCountOfCountryTable.increase(country, "基金项目资助论文");
