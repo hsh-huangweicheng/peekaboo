@@ -6,7 +6,12 @@ import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
 
-import analyzer.NlpFXAnalyzer;
+import analyzer.CoperateAnalyzer;
+import analyzer.FundAnalyzer;
+import analyzer.InfoAnalyzer;
+import analyzer.InstAnalyzer;
+import analyzer.OtherAnalyzer;
+import analyzer.RegexFXAnalyzer;
 import exporter.TextExporter;
 import wos.WosService;
 
@@ -16,8 +21,6 @@ public class Main {
 
 		long timestamp = System.currentTimeMillis();
 		File baseDir = Paths.get(System.getProperty("user.dir"), "data").toFile();
-		File nlpOutputFile = Paths.get(System.getProperty("user.dir"), "output", "nlp.txt").toFile();
-
 		Collection<File> listFiles = FileUtils.listFiles(baseDir, null, true);
 
 		WosService wosService = new WosService();
@@ -33,13 +36,10 @@ public class Main {
 
 		wosService.setOutputDir(outputDir);
 
-		// wosService.addAnalyzer(new InfoAnalyzer());
-		// wosService.addAnalyzer(new FXAnalyzer());
-		// wosService.addAnalyzer(new RegexFXAnalyzer());
-		// wosService.addAnalyzer(new FundAnalyzer());
-		// wosService.addAnalyzer(new InstAnalyzer());
-		wosService.addAnalyzer(new NlpFXAnalyzer(nlpOutputFile));
-		// wosService.addAnalyzer(new CoperateAnalyzer());
+//		wosService.addAnalyzer(new InfoAnalyzer());
+//		wosService.addAnalyzer(new FundAnalyzer());
+		wosService.addAnalyzer(new OtherAnalyzer());
+//		wosService.addAnalyzer(new CoperateAnalyzer());
 
 		wosService.parse(listFiles);
 

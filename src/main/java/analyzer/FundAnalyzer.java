@@ -21,6 +21,10 @@ public class FundAnalyzer implements Analyzer {
 
 	private CategoryTable fundArticleCountByCountryTable = new CategoryTable("我国基金对非洲资助情况(国家)", "国家");
 
+	private CategoryTable noneCitedArticleCountByCountryTable = new CategoryTable("非洲零被引基金情况", "国家");
+
+	private CategoryTable fundCountOfSujectTable = new CategoryTable("非洲基金资助学科", "学科");
+
 	private CategoryTable wcTable = new CategoryTable("研究方向", "研究方向");
 
 	@Override
@@ -41,10 +45,43 @@ public class FundAnalyzer implements Analyzer {
 
 			fundArticleCountByCountry(wosRecord);
 
+			noneCitedArticleCountByCountry(wosRecord);
+
 			// 研究方向按年统计
 			wc(wosRecord);
+
+			fundCountOfSuject(wosRecord);
 		}
 
+	}
+
+	private void fundCountOfSuject(WosRecord wosRecord) {
+		wosRecord.getSubjectList().forEach(subject -> {
+			fundCountOfSujectTable.increase(subject, "论文数量");
+			if (wosRecord.getFoundList().size() > 0) {
+				fundCountOfSujectTable.increase(subject, "基金资助论文数量");
+				if (wosRecord.hasChineseFund()) {
+					fundCountOfSujectTable.increase(subject, "中国基金资助论文数量");
+				}
+			}
+		});
+
+	}
+
+	private void noneCitedArticleCountByCountry(WosRecord wosRecord) {
+		if (0 == wosRecord.getCitedTimes()) {
+			wosRecord.getCountryList().forEach(country -> {
+				noneCitedArticleCountByCountryTable.increase(country, "零被引论文总量");
+
+				if (wosRecord.getFoundList().size() > 0) {
+					noneCitedArticleCountByCountryTable.increase(country, "基金资助论文篇数");
+
+					if (wosRecord.hasChineseFund()) {
+						noneCitedArticleCountByCountryTable.increase(country, "中国基金资助");
+					}
+				}
+			});
+		}
 	}
 
 	private void wc(WosRecord wosRecord) {
@@ -61,6 +98,7 @@ public class FundAnalyzer implements Analyzer {
 
 	private void fundArticleCountByCountry(WosRecord wosRecord) {
 		wosRecord.getAfricaCountryList().forEach(country -> {
+			this.fundArticleCountByCountryTable.increase(country, "论文总量");
 			if (!wosRecord.getFoundList().isEmpty()) {
 				this.fundArticleCountByCountryTable.increase(country, "资助论文数量");
 			}
@@ -114,12 +152,16 @@ public class FundAnalyzer implements Analyzer {
 
 	private void articleCountOfCountry(WosRecord wosRecord) {
 		boolean hasFound = !wosRecord.getFoundList().isEmpty();
+		boolean hasChineseFund = wosRecord.hasChineseFund();
 		wosRecord.getCountryList().stream().forEach(country -> {
 			// 只统计非洲国家
 			if (Utils.isAfrica(country)) {
 				articleCountOfCountryTable.increase(country, "论文总量");
 				if (hasFound) {
 					articleCountOfCountryTable.increase(country, "基金项目资助论文");
+				}
+				if (hasChineseFund) {
+					articleCountOfCountryTable.increase(country, "中国基金资助");
 				}
 			}
 
@@ -129,8 +171,11 @@ public class FundAnalyzer implements Analyzer {
 
 	private void articleCountOfYear(WosRecord wosRecord) {
 		articleCountOfYearTable.increase(wosRecord.getYear(), "论文总篇数");
+
 		if (!wosRecord.getFoundList().isEmpty()) {
-			// new String[] { "年份", "论文总篇数", "受资助论文" }
+			if (wosRecord.hasChineseFund()) {
+				articleCountOfYearTable.increase(wosRecord.getYear(), "中国基金资助");
+			}
 			articleCountOfYearTable.increase(wosRecord.getYear(), "受资助论文");
 		}
 	}
@@ -138,7 +183,7 @@ public class FundAnalyzer implements Analyzer {
 	@Override
 	public Table[] getTables() {
 		return new Table[] { articleCountOfYearTable, articleCountOfCountryTable, articleCitedByYearTable, fundArticleCountByYearTable,
-				fundArticleCountByCountryTable, wcTable };
+				fundArticleCountByCountryTable, wcTable, noneCitedArticleCountByCountryTable, fundCountOfSujectTable };
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class CSVExporter implements Exporter {
 							csvFileFormat)) {
 
 				// 创建CSV文件头
-				csvFilePrinter.printRecord(table.getFieldNames());
+				csvFilePrinter.printRecord((Object) table.getFieldNames());
 
 				table.getTrList().parallelStream().forEach(trList -> {
 					if (trList.size() >= 0) {

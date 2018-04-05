@@ -82,6 +82,8 @@ public class NlpFXAnalyzer implements Analyzer {
 					}
 				}
 
+			} catch (Exception e) {
+				e.printStackTrace();
 			} finally {
 				System.out.printf("\t%s in [%s] found [%2d] entities, used [%3.3f] seconds\r\n", utValue, wosRecord.file.getAbsolutePath(), size,
 						(System.currentTimeMillis() - timestamp) / 1000.0);

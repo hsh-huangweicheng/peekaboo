@@ -51,11 +51,15 @@ public class WosService {
 
 			this.analyzerList.parallelStream().forEach((analyzer) -> {
 				recordList.parallelStream().forEach((wosRecord) -> {
-					analyzer.scan(wosRecord);
+					int year = Integer.parseInt(wosRecord.getYear());
+					if (1977 <= year && year <= 2016) {
+						analyzer.scan(wosRecord);
+					}
 				});
 			});
 
-			System.out.printf("[%s/%s %8dms] %s", count.incrementAndGet(), listFiles.size(), System.currentTimeMillis() - timestamp, file.getAbsolutePath());
+			System.out.printf("[%4d/%s %4dms] %s\r\n", count.incrementAndGet(), listFiles.size(), System.currentTimeMillis() - timestamp,
+					file.getAbsolutePath());
 		});
 
 		this.analyzerList.forEach((analyzer) -> {
@@ -76,9 +80,7 @@ public class WosService {
 	 */
 	private List<String> readLines(File file) {
 		try {
-			List<String> lineList = FileUtils.readLines(file, Charset.forName("utf-8"));
-			System.out.println(count.incrementAndGet() + "/" + total + ", " + file.getAbsolutePath());
-			return lineList;
+			return FileUtils.readLines(file, Charset.forName("utf-8"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

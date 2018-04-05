@@ -1,6 +1,5 @@
 package wos;
 
-import java.io.Console;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,161 +16,201 @@ import utils.Utils;
 
 public class WosRecord {
 
-	private Map<String, List<String>> map = new HashMap<>();
+    private Map<String, List<String>> map = new HashMap<>();
 
-	private Pattern lastWordPattern = Pattern.compile("([& \\w]+)\\.?$");
+    private Pattern lastWordPattern = Pattern.compile("([& \\w]+)\\.?$");
 
-	private String path;
+    private String path;
 
-	private List<String> countryList;
+    private List<String> countryList;
 
-	private Boolean hasChineseFund = null;
+    private Boolean hasChineseFund = null;
 
-	private Boolean hasChineseAuthor = null;
+    private Boolean hasChineseAuthor = null;
 
-	private Boolean hasChineseInst = null;
+    private Boolean hasChineseInst = null;
 
-	public File file;
+    public File file;
 
-	public WosRecord(File file) {
-		this.file = file;
-	}
+    public WosRecord(File file) {
+        this.file = file;
+    }
 
-	public void addField(String fieldName, List<String> lines) {
-		this.map.put(fieldName, lines);
-	}
+    public void addField(String fieldName, List<String> lines) {
+        this.map.put(fieldName, lines);
+    }
 
-	public String getString(String fieldName) {
-		List<String> list = this.getList(fieldName);
-		return StringUtils.join(list, " ").trim();
-	}
+    public String getString(String fieldName) {
+        List<String> list = this.getList(fieldName);
+        return StringUtils.join(list, " ").trim();
+    }
 
-	public List<String> getList(String fieldName) {
-		List<String> fieldValueList = map.get(fieldName);
-		if (null == fieldValueList) {
-			return new ArrayList<>(0);
-		} else {
-			return fieldValueList;
-		}
-	}
+    public String getID() {
+        return getString("UT");
+    }
 
-	/**
-	 * 基金机构
-	 */
-	public List<String> getFoundList() {
-		String foundStr = getString("FU");
-		if (foundStr.length() > 0) {
+    public List<String> getList(String fieldName) {
+        List<String> fieldValueList = map.get(fieldName);
+        if (null == fieldValueList) {
+            return new ArrayList<>(0);
+        } else {
+            return fieldValueList;
+        }
+    }
 
-			String[] founds = foundStr.split(";");
+    public List<String> getSubjectList() {
+        return Arrays.stream(getString("SC").split(";")).map(String::trim).filter(StringUtils::isNotBlank).map(Utils::getSubjectName)
+                .collect(Collectors.toList());
+    }
 
-			return Arrays.asList(founds);
-		} else {
-			return new ArrayList<>();
-		}
-	}
+    /**
+     * 基金机构
+     */
+    public List<String> getFoundList() {
+        String foundStr = getString("FU");
+        if (foundStr.length() > 0) {
 
-	public boolean hasChineseFund() {
-		if (null == hasChineseFund) {
-			boolean present = this.getFoundList().stream().filter(fund -> {
-				return Utils.matchRegPair(fund, Utils.chineseFundOrInstRegPair);
-			}).findAny().isPresent();
+            String[] founds = foundStr.split(";");
 
-			hasChineseFund = new Boolean(present);
-		}
+            return Arrays.asList(founds);
+        } else {
+            return new ArrayList<>();
+        }
+    }
 
-		return hasChineseFund.booleanValue();
-	}
+    public boolean hasFound() {
+        return !getFoundList().isEmpty();
+    }
 
-	public boolean hasChineseAuthor() {
-		if (null == hasChineseAuthor) {
-			boolean present = this.getCountryList().parallelStream().filter(country -> {
-				return "中国".equals(country);
-			}).findAny().isPresent();
+    public boolean hasChineseFund() {
+        if (null == hasChineseFund) {
+            boolean present = this.getFoundList().stream().filter(fund -> {
+                return Utils.matchRegPair(fund, Utils.chineseFundOrInstRegPair);
+            }).findAny().isPresent();
 
-			hasChineseAuthor = new Boolean(present);
-		}
+            hasChineseFund = new Boolean(present);
+        }
 
-		return hasChineseAuthor.booleanValue();
-	}
+        return hasChineseFund.booleanValue();
+    }
 
-	public String getYear() {
-		return this.getString("PY");
-	}
+    public boolean hasChineseAuthor() {
+        if (null == hasChineseAuthor) {
+            boolean present = this.getCountryList().parallelStream().filter(country -> {
+                return "中国".equals(country);
+            }).findAny().isPresent();
 
-	public List<String> getAfricaCountryList() {
-		return this.getCountryList().stream().filter(country -> {
-			return Utils.isAfrica(country);
-		}).collect(Collectors.toList());
-	}
+            hasChineseAuthor = new Boolean(present);
+        }
 
-	public List<String> getCountryList() {
+        return hasChineseAuthor.booleanValue();
+    }
 
-		if (null == countryList) {
+    public String getYear() {
+        return this.getString("PY");
+    }
 
-			List<String> list = new ArrayList<>();
+    public List<String> getAfricaCountryList() {
+        return this.getCountryList().stream().filter(country -> {
+            return Utils.isAfrica(country);
+        }).collect(Collectors.toList());
+    }
 
-			list.addAll(this.getList("RP"));
-			list.addAll(this.getList("C1"));
+    public List<String> getNotAfricaCountryList() {
+        return this.getCountryList().stream().filter(country -> {
+            return !Utils.isAfrica(country);
+        }).collect(Collectors.toList());
+    }
 
-			countryList = list.parallelStream().map((line) -> {
-				return parseCountryFromLine(line);
-			}).distinct().collect(Collectors.toList());
-		}
+    public List<String> getCountryList() {
 
-		return countryList;
-	}
+        if (null == countryList) {
 
-	public void setPath(String path) {
-		this.path = path;
-	}
+            List<String> list = new ArrayList<>();
 
-	public String getPath() {
-		return this.path;
-	}
+            list.addAll(this.getList("RP"));
+            list.addAll(this.getList("C1"));
 
-	public int getCitedTimes() {
-		String citedTimes = this.getString("TC");
-		try {
-			return Integer.parseInt(citedTimes, 10);
-		} catch (NumberFormatException exception) {
-			return 0;
-		}
-	}
+            countryList = list.parallelStream().map((line) -> {
+                return parseCountryFromLine(line);
+            }).distinct().collect(Collectors.toList());
+        }
 
-	/**
-	 * 从C1或RP中解析出国家名称
-	 * 
-	 * @param line
-	 * @return
-	 */
-	private String parseCountryFromLine(String line) {
-		String country = Utils.getMatchedKey(line, Utils.countryRegPairList);
+        return countryList;
+    }
 
-		if (StringUtils.isEmpty(country)) {
-			line = line.replaceAll("\\W+$", "");
-			Matcher matcher = lastWordPattern.matcher(line);
-			if (matcher.find()) {
-				country = matcher.group(1).trim();
-				country = Utils.convertCamelCase(country);
-			}
-		}
+    public boolean hasChina() {
+        return getCountryList().stream().anyMatch(Utils::isChina);
+    }
 
-		String countryName = Utils.getCountryName(country);
+    public boolean hasOtherCountry() {
+        return getCountryList().stream().anyMatch(country -> {
+            return !Utils.isAfrica(country);
+        });
+    }
 
-		if (StringUtils.isEmpty(countryName)) {
-			System.err.println("[Country Error | " + country + "]\t" + line);
-			return country;
-		}
+    public void setPath(String path) {
+        this.path = path;
+    }
 
-		return countryName;
-	}
+    public String getPath() {
+        return this.path;
+    }
 
-	public String getFirstCountry() {
-		List<String> countryList = this.getCountryList();
-		if (countryList.isEmpty()) {
-			System.err.println("no country UT:" + this.getString("UT"));
-			return "";
-		}
-		return countryList.get(0);
-	}
+    public int getCitedTimes() {
+        String citedTimes = this.getString("TC");
+        try {
+            return Integer.parseInt(citedTimes, 10);
+        } catch (NumberFormatException exception) {
+            return 0;
+        }
+    }
+
+    /**
+     * 从C1或RP中解析出国家名称
+     *
+     * @param line
+     * @return
+     */
+    private String parseCountryFromLine(String line) {
+        String country = Utils.getMatchedKey(line, Utils.countryRegPairList);
+
+        if (StringUtils.isEmpty(country)) {
+            line = line.replaceAll("\\W+$", "");
+            Matcher matcher = lastWordPattern.matcher(line);
+            if (matcher.find()) {
+                country = matcher.group(1).trim();
+                country = Utils.convertCamelCase(country);
+            }
+        }
+
+        String countryName = Utils.getCountryName(country);
+
+        if (StringUtils.isEmpty(countryName)) {
+            System.err.println("[Country Error | " + country + "]\t" + line);
+            return country;
+        }
+
+        return countryName;
+    }
+
+    public boolean isFirstChina() {
+        return Utils.isChina(this.getFirstCountry());
+    }
+
+    public boolean isFirstAfrica() {
+        return Utils.isAfrica(this.getFirstCountry());
+    }
+
+    public String getFirstCountry() {
+        List<String> countryList = this.getCountryList();
+        if (countryList.size() > 1) {
+            return countryList.get(0);
+        }
+        return "";
+    }
+
+    public boolean isCoperated() {
+        return getCountryList().size() > 1;
+    }
 }
